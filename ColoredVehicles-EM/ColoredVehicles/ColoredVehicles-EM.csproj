@@ -1,0 +1,65 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>ColoredVehicles_EM</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ElixrMods.Artistry" Version="3.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Eco.ActorsFramework">
+      <HintPath>..\..\dependencies\Eco.ActorsFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Eco.Core">
+      <HintPath>..\..\dependencies\Eco.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Eco.Gameplay">
+      <HintPath>..\..\dependencies\Eco.Gameplay.dll</HintPath>
+    </Reference>
+    <Reference Include="Eco.ModKit">
+      <HintPath>..\..\dependencies\Eco.ModKit.dll</HintPath>
+    </Reference>
+    <Reference Include="Eco.Mods">
+      <HintPath>..\..\dependencies\Eco.Mods.dll</HintPath>
+    </Reference>
+    <Reference Include="Eco.Networking.ENet">
+      <HintPath>..\..\dependencies\Eco.Networking.ENet.dll</HintPath>
+    </Reference>
+    <Reference Include="Eco.Plugins">
+      <HintPath>..\..\dependencies\Eco.Plugins.dll</HintPath>
+    </Reference>
+    <Reference Include="Eco.Shared">
+      <HintPath>..\..\dependencies\Eco.Shared.dll</HintPath>
+    </Reference>
+    <Reference Include="Eco.Simulation">
+      <HintPath>..\..\dependencies\Eco.Simulation.dll</HintPath>
+    </Reference>
+    <Reference Include="Eco.Stats">
+      <HintPath>..\..\dependencies\Eco.Stats.dll</HintPath>
+    </Reference>
+    <Reference Include="Eco.Tests">
+      <HintPath>..\..\dependencies\Eco.Tests.dll</HintPath>
+    </Reference>
+    <Reference Include="Eco.WebServer">
+      <HintPath>..\..\dependencies\Eco.WebServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Eco.WindowsForms">
+      <HintPath>..\..\dependencies\Eco.WindowsForms.dll</HintPath>
+    </Reference>
+    <Reference Include="Eco.World">
+      <HintPath>..\..\dependencies\Eco.World.dll</HintPath>
+    </Reference>
+    <Reference Include="Eco.WorldGenerator">
+      <HintPath>..\..\dependencies\Eco.WorldGenerator.dll</HintPath>
+    </Reference>
+    <Reference Include="EcoServer">
+      <HintPath>..\..\dependencies\EcoServer.dll</HintPath>
+    </Reference>
+    <Reference Include="NodeGraphControl">
+      <HintPath>..\..\dependencies\NodeGraphControl.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>
