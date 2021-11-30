@@ -27,6 +27,8 @@ You may edit this to your hearts content and build your own version,
 
 This Does NOT Use the EM Resolvers at this time, so to adjust the recipes you will need to do it in this Project and build yourself
 
+You can find information on all items In EM Artistry [Here](https://docs.elixrmods.com/Page/2/ElixrModsEMArtistry)
+
 # Credits
 
 Original Credits goto Zangdar for the Creation of the Original Mod [Colored Vehicles](https://eco.mod.io/colored-vehicles) and a thank you for allowing me to make this modified version
