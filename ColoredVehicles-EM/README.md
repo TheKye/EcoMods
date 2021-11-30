@@ -4,7 +4,7 @@ Colored Vehicles Mod By Zangdar, This has been Adjusted to use EM Artistry items
 
 This Requires [EM Artistry](https://eco.mod.io/elixr-mods-artistry) V3.1.0+ and [EM Framework](https://eco.mod.io/elixr-mods-em-framework) V3.1.4+ To use this version
 
-#Installation
+# Installation
 
 Ensure you have EM Framework and EM Artistry installed
 
