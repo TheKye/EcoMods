@@ -14,6 +14,12 @@ Unzip into your Server Root Folder,
 
 Reboot your server and you should be good to go.
 
+# Updates
+
+This Mod May or May not be updated in line with the original mod
+
+It may also take longer to prep an updated version of this mod to the latest version of the original mod
+
 
 # Notes
 
