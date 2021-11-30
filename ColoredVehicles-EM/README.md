@@ -38,7 +38,7 @@ Original Credits goto Zangdar for the Creation of the Original Mod [Colored Vehi
 
 You May not Redistribute this Modified version of this mod with Intent To Sell. 
 
-You Must Include this Readme in all forks and not change the Credits Section
+You Must Include this Readme in all forks and not change the Credits OR License Section
 
 You May Redistribute a modified version of this mod so long as you don't charge for it.
 
