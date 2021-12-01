@@ -12,7 +12,7 @@ namespace Eco.Mods.TechTree
     using Eco.Gameplay.Systems.TextLinks;
     using Eco.Shared.Localization;
     using Eco.Shared.Serialization;
-
+    
     [Serialized]
     [LocDisplayName("Powered Cart Yellow")]
     [Weight(15000)]  
@@ -34,8 +34,9 @@ namespace Eco.Mods.TechTree
             LocalizableName = Localizer.DoStr("Paint Powered Cart Yellow"),
             IngredientList = new()
             {
-                new EMIngredient("PoweredCartItem", false, 1, true),
-                new EMIngredient("YellowPaintItem", false, 1, true),
+                new EMIngredient("SmallWoodCartItem", false, 1, true),
+				new EMIngredient("YellowPaintItem", false, 1, true),
+                new EMIngredient("BlackDyeItem", false, 1, true),
                 new EMIngredient("PaintBrushItem", false, 1, true),
                 new EMIngredient("PaintPaletteItem", false, 1, true),
             },
@@ -48,13 +49,13 @@ namespace Eco.Mods.TechTree
             BaseExperienceOnCraft = 0.1f,
             BaseLabor = 250,
             LaborIsStatic = false,
-            BaseCraftTime = 5,
+            BaseCraftTime = 2.5f,
             CraftTimeIsStatic = false,
             CraftingStation = "PrimitivePaintingTableItem",
             RequiredSkillType = typeof(BasicEngineeringSkill),
             RequiredSkillLevel = 0,
         };
-
+        
         static PaintPoweredCartYellowRecipe() { EMRecipeResolver.AddDefaults(Defaults); }
 
         public PaintPoweredCartYellowRecipe()
@@ -79,10 +80,10 @@ namespace Eco.Mods.TechTree
     [RequireComponent(typeof(TailingsReportComponent))]     
     public partial class PoweredCartYellowObject : PhysicsWorldObject, IRepresentsItem, IStorageSlotObject
     {
-        public override LocString DisplayName => Localizer.DoStr("Powered Cart Yellow");
-        public Type RepresentedItemType => typeof(PoweredCartYellowItem);
-
         private static readonly StorageSlotModel SlotDefaults = new(typeof(PoweredCartYellowObject)) { StorageSlots = 18, };
+
+        public override LocString DisplayName { get { return Localizer.DoStr("Powered Cart Yellow"); } }
+        public Type RepresentedItemType { get { return typeof(PoweredCartYellowItem); } }
 
         static PoweredCartYellowObject()
         {
@@ -100,11 +101,11 @@ namespace Eco.Mods.TechTree
         protected override void Initialize()
         {
             base.Initialize();
-
-            this.GetComponent<PublicStorageComponent>().Initialize(EMStorageSlotResolver.Obj.ResolveSlots(this), 3500000);
-            this.GetComponent<FuelSupplyComponent>().Initialize(2, fuelTagList);
-            this.GetComponent<FuelConsumptionComponent>().Initialize(35);
-            this.GetComponent<AirPollutionComponent>().Initialize(0.1f);
+            
+            this.GetComponent<PublicStorageComponent>().Initialize(EMStorageSlotResolver.Obj.ResolveSlots(this), 3500000);           
+            this.GetComponent<FuelSupplyComponent>().Initialize(2, fuelTagList);           
+            this.GetComponent<FuelConsumptionComponent>().Initialize(35);    
+            this.GetComponent<AirPollutionComponent>().Initialize(0.1f);            
             this.GetComponent<VehicleComponent>().Initialize(12, 1.5f, 1);
         }
     }

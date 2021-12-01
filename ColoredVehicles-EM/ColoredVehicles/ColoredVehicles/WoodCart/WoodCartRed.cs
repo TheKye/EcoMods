@@ -10,7 +10,6 @@ namespace Eco.Mods.TechTree
     using Eco.Shared.Math;
     using Eco.Shared.Localization;
     using Eco.Shared.Serialization;
-    using Eco.EM.Artistry;
 
     [Serialized]
     [LocDisplayName("Wood Cart Red")]
@@ -34,7 +33,7 @@ namespace Eco.Mods.TechTree
                     new IngredientElement[]
                     {
                         new IngredientElement(typeof(WoodCartItem), 1, true),
-                        new IngredientElement(typeof(RedPaintItem), 20, typeof(BasicEngineeringSkill), typeof(BasicEngineeringLavishResourcesTalent)),
+                        new IngredientElement(typeof(TomatoItem), 20, typeof(BasicEngineeringSkill), typeof(BasicEngineeringLavishResourcesTalent)),
                     },
                     new CraftingElement<WoodCartRedItem>()
                 )

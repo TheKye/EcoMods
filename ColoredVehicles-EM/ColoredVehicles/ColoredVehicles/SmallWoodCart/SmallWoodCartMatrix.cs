@@ -3,14 +3,14 @@ namespace Eco.Mods.TechTree
     using System;
     using System.Collections.Generic;
     using Eco.Core.Items;
+    using Eco.EM.Artistry;
+    using Eco.EM.Framework.Resolvers;
     using Eco.Gameplay.Components;
     using Eco.Gameplay.Components.Auth;
     using Eco.Gameplay.Items;
     using Eco.Gameplay.Objects;
     using Eco.Shared.Localization;
     using Eco.Shared.Serialization;
-    using Eco.EM.Artistry;
-    using Eco.EM.Framework.Resolvers;
 
     [Serialized]
     [LocDisplayName("Small Wood Cart Matrix")]
@@ -33,8 +33,8 @@ namespace Eco.Mods.TechTree
             IngredientList = new()
             {
                 new EMIngredient("SmallWoodCartItem", false, 1, true),
-                new EMIngredient("BlackDyeItem", false, 1, true),
-                new EMIngredient("GreenDyeItem", false, 1, true),
+				new EMIngredient("BlackPaintItem", false, 1, true),
+				new EMIngredient("GreenPaintItem", false, 1, true),
                 new EMIngredient("PaintBrushItem", false, 1, true),
                 new EMIngredient("PaintPaletteItem", false, 1, true),
             },
@@ -78,7 +78,7 @@ namespace Eco.Mods.TechTree
         public override LocString DisplayName => Localizer.DoStr("Small Wood Cart Matrix");
         public Type RepresentedItemType => typeof(SmallWoodCartMatrixItem);
 
-        private static readonly StorageSlotModel SlotDefaults = new(typeof(PoweredCartMatrixObject)) { StorageSlots = 8, };
+        private static readonly StorageSlotModel SlotDefaults = new(typeof(SmallWoodCartMatrixObject)) { StorageSlots = 8, };
 
         static SmallWoodCartMatrixObject()
         {
@@ -92,9 +92,9 @@ namespace Eco.Mods.TechTree
         {
             base.Initialize();
 
-            this.GetComponent<PublicStorageComponent>().Initialize(EMStorageSlotResolver.Obj.ResolveSlots(this), 1400000);
+            this.GetComponent<PublicStorageComponent>().Initialize(EMStorageSlotResolver.Obj.ResolveSlots(this), 1400000);           
             this.GetComponent<VehicleComponent>().Initialize(10, 1, 1);
-            this.GetComponent<VehicleComponent>().HumanPowered(0.5f);
+            this.GetComponent<VehicleComponent>().HumanPowered(0.5f);           
         }
     }
 }

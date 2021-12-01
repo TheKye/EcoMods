@@ -33,7 +33,7 @@ namespace Eco.Mods.TechTree
             IngredientList = new()
             {
                 new EMIngredient("SmallWoodCartItem", false, 1, true),
-                new EMIngredient("BlackDyeItem", false, 1, true),
+				new EMIngredient("BlackPaintItem", false, 1, true),
                 new EMIngredient("PaintBrushItem", false, 1, true),
                 new EMIngredient("PaintPaletteItem", false, 1, true),
             },
@@ -77,7 +77,7 @@ namespace Eco.Mods.TechTree
         public override LocString DisplayName => Localizer.DoStr("Small Wood Cart Black");
         public Type RepresentedItemType => typeof(SmallWoodCartBlackItem);
 
-        private static readonly StorageSlotModel SlotDefaults = new(typeof(PoweredCartBlackObject)) { StorageSlots = 8, };
+        private static readonly StorageSlotModel SlotDefaults = new(typeof(SmallWoodCartBlackObject)) { StorageSlots = 8, };
 
         static SmallWoodCartBlackObject()
         {

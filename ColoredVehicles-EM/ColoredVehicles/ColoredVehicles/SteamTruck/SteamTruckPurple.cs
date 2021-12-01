@@ -3,6 +3,8 @@
     using System;
     using System.Collections.Generic;
     using Eco.Core.Items;
+    using Eco.EM.Artistry;
+    using Eco.EM.Framework.Resolvers;
     using Eco.Gameplay.Components;
     using Eco.Gameplay.Components.Auth;
     using Eco.Gameplay.Items;
@@ -10,8 +12,7 @@
     using Eco.Shared.Math;
     using Eco.Shared.Localization;
     using Eco.Shared.Serialization;
-    using Eco.EM.Artistry;
-
+    
     [Serialized]
     [LocDisplayName("Steam Truck Purple")]
     [Weight(25000)]  
@@ -20,33 +21,50 @@
     [Tag("ColoredSteamTruck", 1)]
     public partial class SteamTruckPurpleItem : WorldObjectItem<SteamTruckPurpleObject>
     {
-        public override LocString DisplayDescription { get { return Localizer.DoStr("A purple truck that runs on steam."); } }
+        public override LocString DisplayDescription => Localizer.DoStr("A purple truck that runs on steam.");
     }
     
-      
-    public class PaintSteamTruckPurpleRecipe : RecipeFamily
+    public class PaintSteamTruckPurpleRecipe : RecipeFamily, IConfigurableRecipe
     {
+        static RecipeDefaultModel Defaults => new()
+        {
+            ModelType = typeof(PaintSteamTruckPurpleRecipe).Name,
+            Assembly = typeof(PaintSteamTruckPurpleRecipe).AssemblyQualifiedName,
+            HiddenName = "Paint Steam Truck Purple",
+            LocalizableName = Localizer.DoStr("Paint Steam Truck Purple"),
+            IngredientList = new()
+            {
+                new EMIngredient("SteamTruckItem", false, 1, true),
+				new EMIngredient("PurplePaintItem", false, 1, true),
+                new EMIngredient("PaintBrushItem", false, 1, true),
+                new EMIngredient("PaintPaletteItem", false, 1, true),
+            },
+            ProductList = new()
+            {
+                new EMCraftable("SteamTruckPurpleItem"),
+                new EMCraftable("PaintBrushItem"),
+                new EMCraftable("PaintPaletteItem"),
+            },
+            BaseExperienceOnCraft = 0.1f,
+            BaseLabor = 500,
+            LaborIsStatic = false,
+            BaseCraftTime = 10,
+            CraftTimeIsStatic = false,
+            CraftingStation = "AdvancedPaintingTableItem",
+            RequiredSkillType = typeof(MechanicsSkill),
+            RequiredSkillLevel = 0,
+        };
+
+        static PaintSteamTruckPurpleRecipe() { EMRecipeResolver.AddDefaults(Defaults); }
+
         public PaintSteamTruckPurpleRecipe()
         {
-            this.Recipes = new List<Recipe>
-            {
-                new Recipe(
-                    "Paint Steam Truck Purple",
-                    Localizer.DoStr("Paint Steam Truck Purple"),
-                    new IngredientElement[]
-                    {
-                        new IngredientElement(typeof(SteamTruckItem), 1, true), 
-                        new IngredientElement(typeof(PurplePaintItem), 40, typeof(MechanicsSkill), typeof(MechanicsLavishResourcesTalent)),
-                    },
-                    new CraftingElement<SteamTruckPurpleItem>()
-                )
-            };
-            this.ExperienceOnCraft = 0.1f;
-            this.LaborInCalories = CreateLaborInCaloriesValue(500, typeof(MechanicsSkill)); 
-            this.CraftMinutes = CreateCraftTimeValue(typeof(PaintSteamTruckPurpleRecipe), 10, typeof(MechanicsSkill));    
-
-            this.Initialize(Localizer.DoStr("Paint Steam Truck Purple"), typeof(PaintSteamTruckPurpleRecipe));
-            CraftingComponent.AddRecipe(typeof(AdvancedPaintingTableObject), this);
+            this.Recipes = EMRecipeResolver.Obj.ResolveRecipe(this);
+            this.LaborInCalories = EMRecipeResolver.Obj.ResolveLabor(this);
+            this.CraftMinutes = EMRecipeResolver.Obj.ResolveCraftMinutes(this);
+            this.ExperienceOnCraft = EMRecipeResolver.Obj.ResolveExperience(this);
+            this.Initialize(Defaults.LocalizableName, GetType());
+            CraftingComponent.AddRecipe(EMRecipeResolver.Obj.ResolveStation(this), this);
         }
     }
 
@@ -60,17 +78,20 @@
     [RequireComponent(typeof(VehicleComponent))]
     [RequireComponent(typeof(ModularStockpileComponent))]   
     [RequireComponent(typeof(TailingsReportComponent))]     
-    public partial class SteamTruckPurpleObject : PhysicsWorldObject, IRepresentsItem
+    public partial class SteamTruckPurpleObject : PhysicsWorldObject, IRepresentsItem, IStorageSlotObject
     {
+        public override LocString DisplayName => Localizer.DoStr("Steam Truck Purple");
+        public Type RepresentedItemType => typeof(SteamTruckPurpleItem);
+
+        private static readonly StorageSlotModel SlotDefaults = new(typeof(SteamTruckPurpleObject)) { StorageSlots = 24, };
+
         static SteamTruckPurpleObject()
         {
             WorldObject.AddOccupancy<SteamTruckPurpleObject>(new List<BlockOccupancy>(0));
+            EMStorageSlotResolver.AddDefaults(SlotDefaults);
         }
 
-        public override LocString DisplayName { get { return Localizer.DoStr("Steam Truck Purple"); } }
-        public Type RepresentedItemType { get { return typeof(SteamTruckPurpleItem); } }
-
-        private static string[] fuelTagList = new string[]
+        private static readonly string[] fuelTagList = new string[]
         {
             "Burnable Fuel"
         };
@@ -81,11 +102,11 @@
         {
             base.Initialize();
             
-            this.GetComponent<PublicStorageComponent>().Initialize(24, 5000000);           
+            this.GetComponent<PublicStorageComponent>().Initialize(EMStorageSlotResolver.Obj.ResolveSlots(this), 5000000);           
             this.GetComponent<FuelSupplyComponent>().Initialize(2, fuelTagList);           
             this.GetComponent<FuelConsumptionComponent>().Initialize(25);    
-            this.GetComponent<AirPollutionComponent>().Initialize(0.2f);            
-            this.GetComponent<VehicleComponent>().Initialize(18, 2, 2);
+            this.GetComponent<AirPollutionComponent>().Initialize(0.5f);            
+            this.GetComponent<VehicleComponent>().Initialize(20, 2, 2);
             this.GetComponent<StockpileComponent>().Initialize(new Vector3i(2,2,3));  
         }
     }

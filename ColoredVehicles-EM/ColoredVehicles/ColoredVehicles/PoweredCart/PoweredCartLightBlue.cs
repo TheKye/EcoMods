@@ -30,13 +30,14 @@ namespace Eco.Mods.TechTree
         {
             ModelType = typeof(PaintPoweredCartLightBlueRecipe).Name,
             Assembly = typeof(PaintPoweredCartLightBlueRecipe).AssemblyQualifiedName,
-            HiddenName = "Paint Powered Cart Light Blue",
-            LocalizableName = Localizer.DoStr("Paint Powered Cart Light Blue"),
+            HiddenName = "Paint Powered Cart LightBlue",
+            LocalizableName = Localizer.DoStr("Paint Powered Cart LightBlue"),
             IngredientList = new()
             {
-                new EMIngredient("PoweredCartItem", false, 1, true),
-                new EMIngredient("BluePaintItem", false, 1, true),
-                new EMIngredient("WhitePaintItem", false, 1, true),
+                new EMIngredient("SmallWoodCartItem", false, 1, true),
+				new EMIngredient("BluePaintItem", false, 1, true),
+				new EMIngredient("WhitePaintItem", false, 1, true),
+                new EMIngredient("BlackDyeItem", false, 1, true),
                 new EMIngredient("PaintBrushItem", false, 1, true),
                 new EMIngredient("PaintPaletteItem", false, 1, true),
             },
@@ -49,13 +50,13 @@ namespace Eco.Mods.TechTree
             BaseExperienceOnCraft = 0.1f,
             BaseLabor = 250,
             LaborIsStatic = false,
-            BaseCraftTime = 5,
+            BaseCraftTime = 2.5f,
             CraftTimeIsStatic = false,
             CraftingStation = "PrimitivePaintingTableItem",
             RequiredSkillType = typeof(BasicEngineeringSkill),
             RequiredSkillLevel = 0,
         };
-
+        
         static PaintPoweredCartLightBlueRecipe() { EMRecipeResolver.AddDefaults(Defaults); }
 
         public PaintPoweredCartLightBlueRecipe()
@@ -80,10 +81,10 @@ namespace Eco.Mods.TechTree
     [RequireComponent(typeof(TailingsReportComponent))]     
     public partial class PoweredCartLightBlueObject : PhysicsWorldObject, IRepresentsItem, IStorageSlotObject
     {
-        public override LocString DisplayName => Localizer.DoStr("Powered Cart LightBlue");
-        public Type RepresentedItemType => typeof(PoweredCartLightBlueItem);
-
         private static readonly StorageSlotModel SlotDefaults = new(typeof(PoweredCartLightBlueObject)) { StorageSlots = 18, };
+
+        public override LocString DisplayName { get { return Localizer.DoStr("Powered Cart LightBlue"); } }
+        public Type RepresentedItemType { get { return typeof(PoweredCartLightBlueItem); } }
 
         static PoweredCartLightBlueObject()
         {
@@ -101,11 +102,11 @@ namespace Eco.Mods.TechTree
         protected override void Initialize()
         {
             base.Initialize();
-
-            this.GetComponent<PublicStorageComponent>().Initialize(EMStorageSlotResolver.Obj.ResolveSlots(this), 3500000);
-            this.GetComponent<FuelSupplyComponent>().Initialize(2, fuelTagList);
-            this.GetComponent<FuelConsumptionComponent>().Initialize(35);
-            this.GetComponent<AirPollutionComponent>().Initialize(0.1f);
+            
+            this.GetComponent<PublicStorageComponent>().Initialize(EMStorageSlotResolver.Obj.ResolveSlots(this), 3500000);           
+            this.GetComponent<FuelSupplyComponent>().Initialize(2, fuelTagList);           
+            this.GetComponent<FuelConsumptionComponent>().Initialize(35);    
+            this.GetComponent<AirPollutionComponent>().Initialize(0.1f);            
             this.GetComponent<VehicleComponent>().Initialize(12, 1.5f, 1);
         }
     }

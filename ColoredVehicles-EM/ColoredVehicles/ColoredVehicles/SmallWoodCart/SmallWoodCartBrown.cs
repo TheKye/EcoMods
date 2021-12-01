@@ -3,6 +3,7 @@ namespace Eco.Mods.TechTree
     using System;
     using System.Collections.Generic;
     using Eco.Core.Items;
+    using Eco.EM.Artistry;
     using Eco.EM.Framework.Resolvers;
     using Eco.Gameplay.Components;
     using Eco.Gameplay.Components.Auth;
@@ -32,7 +33,7 @@ namespace Eco.Mods.TechTree
             IngredientList = new()
             {
                 new EMIngredient("SmallWoodCartItem", false, 1, true),
-                new EMIngredient("BrownDyeItem", false, 1, true),
+				new EMIngredient("BrownPaintItem", false, 1, true),
                 new EMIngredient("PaintBrushItem", false, 1, true),
                 new EMIngredient("PaintPaletteItem", false, 1, true),
             },
@@ -76,7 +77,7 @@ namespace Eco.Mods.TechTree
         public override LocString DisplayName => Localizer.DoStr("Small Wood Cart Brown");
         public Type RepresentedItemType => typeof(SmallWoodCartBrownItem);
 
-        private static readonly StorageSlotModel SlotDefaults = new(typeof(PoweredCartBrownObject)) { StorageSlots = 8, };
+        private static readonly StorageSlotModel SlotDefaults = new(typeof(SmallWoodCartBrownObject)) { StorageSlots = 8, };
 
         static SmallWoodCartBrownObject()
         {
@@ -90,9 +91,9 @@ namespace Eco.Mods.TechTree
         {
             base.Initialize();
 
-            this.GetComponent<PublicStorageComponent>().Initialize(EMStorageSlotResolver.Obj.ResolveSlots(this), 1400000);
+            this.GetComponent<PublicStorageComponent>().Initialize(EMStorageSlotResolver.Obj.ResolveSlots(this), 1400000);           
             this.GetComponent<VehicleComponent>().Initialize(10, 1, 1);
-            this.GetComponent<VehicleComponent>().HumanPowered(0.5f);
+            this.GetComponent<VehicleComponent>().HumanPowered(0.5f);           
         }
     }
 }

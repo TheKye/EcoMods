@@ -83,7 +83,7 @@ namespace Eco.Mods.TechTree
             LaborIsStatic = false,
             BaseCraftTime = 5,
             CraftTimeIsStatic = false,
-            CraftingStation = "CarpentryTable",
+            CraftingStation = "CarpentryTableItem",
             RequiredSkillType = typeof(LoggingSkill),
             RequiredSkillLevel = 3,
         };

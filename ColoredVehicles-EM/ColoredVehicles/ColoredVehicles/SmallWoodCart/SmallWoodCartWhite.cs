@@ -3,14 +3,14 @@ namespace Eco.Mods.TechTree
     using System;
     using System.Collections.Generic;
     using Eco.Core.Items;
+    using Eco.EM.Artistry;
+    using Eco.EM.Framework.Resolvers;
     using Eco.Gameplay.Components;
     using Eco.Gameplay.Components.Auth;
     using Eco.Gameplay.Items;
     using Eco.Gameplay.Objects;
     using Eco.Shared.Localization;
     using Eco.Shared.Serialization;
-    using Eco.EM.Artistry;
-    using Eco.EM.Framework.Resolvers;
 
     [Serialized]
     [LocDisplayName("Small Wood Cart White")]
@@ -33,7 +33,7 @@ namespace Eco.Mods.TechTree
             IngredientList = new()
             {
                 new EMIngredient("SmallWoodCartItem", false, 1, true),
-                new EMIngredient("WhiteDyeItem", false, 1, true),
+				new EMIngredient("WhitePaintItem", false, 1, true),
                 new EMIngredient("PaintBrushItem", false, 1, true),
                 new EMIngredient("PaintPaletteItem", false, 1, true),
             },
@@ -77,7 +77,7 @@ namespace Eco.Mods.TechTree
         public override LocString DisplayName => Localizer.DoStr("Small Wood Cart White");
         public Type RepresentedItemType => typeof(SmallWoodCartWhiteItem);
 
-        private static readonly StorageSlotModel SlotDefaults = new(typeof(PoweredCartWhiteObject)) { StorageSlots = 8, };
+        private static readonly StorageSlotModel SlotDefaults = new(typeof(SmallWoodCartWhiteObject)) { StorageSlots = 8, };
 
         static SmallWoodCartWhiteObject()
         {
@@ -91,9 +91,9 @@ namespace Eco.Mods.TechTree
         {
             base.Initialize();
 
-            this.GetComponent<PublicStorageComponent>().Initialize(EMStorageSlotResolver.Obj.ResolveSlots(this), 1400000);
+            this.GetComponent<PublicStorageComponent>().Initialize(EMStorageSlotResolver.Obj.ResolveSlots(this), 1400000);           
             this.GetComponent<VehicleComponent>().Initialize(10, 1, 1);
-            this.GetComponent<VehicleComponent>().HumanPowered(0.5f);
+            this.GetComponent<VehicleComponent>().HumanPowered(0.5f);           
         }
     }
 }

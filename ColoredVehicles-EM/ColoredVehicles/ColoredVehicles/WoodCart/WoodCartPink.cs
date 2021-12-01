@@ -3,6 +3,8 @@ namespace Eco.Mods.TechTree
     using System;
     using System.Collections.Generic;
     using Eco.Core.Items;
+    using Eco.EM.Artistry;
+    using Eco.EM.Framework.Resolvers;
     using Eco.Gameplay.Components;
     using Eco.Gameplay.Components.Auth;
     using Eco.Gameplay.Items;
@@ -10,7 +12,6 @@ namespace Eco.Mods.TechTree
     using Eco.Shared.Math;
     using Eco.Shared.Localization;
     using Eco.Shared.Serialization;
-    using Eco.EM.Artistry;
 
     [Serialized]
     [LocDisplayName("Wood Cart Pink")]
@@ -19,33 +20,51 @@ namespace Eco.Mods.TechTree
     [Tag("ColoredWoodCart")]
     public partial class WoodCartPinkItem : WorldObjectItem<WoodCartPinkObject>
     {
-        public override LocString DisplayDescription { get { return Localizer.DoStr("Small pink cart for hauling small loads."); } }
+        public override LocString DisplayDescription => Localizer.DoStr("Small pink cart for hauling small loads.");
     }
 
-    public class PaintWoodCartPinkRecipe : RecipeFamily
+    public class PaintWoodCartPinkRecipe : RecipeFamily, IConfigurableRecipe
     {
+        static RecipeDefaultModel Defaults => new()
+        {
+            ModelType = typeof(PaintWoodCartPinkRecipe).Name,
+            Assembly = typeof(PaintWoodCartPinkRecipe).AssemblyQualifiedName,
+            HiddenName = "Paint Wood Cart Pink",
+            LocalizableName = Localizer.DoStr("Paint Wood Cart Pink"),
+            IngredientList = new()
+            {
+                new EMIngredient("WoodCartItem", false, 1, true),
+				new EMIngredient("PurplePaintItem", false, 1, true),
+				new EMIngredient("WhitePaintItem", false, 1, true),
+                new EMIngredient("PaintBrushItem", false, 1, true),
+                new EMIngredient("PaintPaletteItem", false, 1, true),
+            },
+            ProductList = new()
+            {
+                new EMCraftable("WoodCartPinkItem"),
+                new EMCraftable("PaintBrushItem"),
+                new EMCraftable("PaintPaletteItem"),
+            },
+            BaseExperienceOnCraft = 0.1f,
+            BaseLabor = 250,
+            LaborIsStatic = false,
+            BaseCraftTime = 5f,
+            CraftTimeIsStatic = false,
+            CraftingStation = "PrimitivePaintingTableItem",
+            RequiredSkillType = typeof(BasicEngineeringSkill),
+            RequiredSkillLevel = 0,
+        };
+
+        static PaintWoodCartPinkRecipe() { EMRecipeResolver.AddDefaults(Defaults); }
+
         public PaintWoodCartPinkRecipe()
         {
-            this.Recipes = new List<Recipe>
-            {
-                new Recipe(
-                    "Paint Wood Cart Pink",
-                    Localizer.DoStr("Paint Wood Cart Pink"),
-                    new IngredientElement[]
-                    {
-                        new IngredientElement(typeof(WoodCartItem), 1, true),
-                        new IngredientElement(typeof(PurplePaintItem), 12, typeof(BasicEngineeringSkill), typeof(BasicEngineeringLavishResourcesTalent)),
-                        new IngredientElement(typeof(WhitePaintItem), 8, typeof(BasicEngineeringSkill), typeof(BasicEngineeringLavishResourcesTalent)),
-                    },
-                    new CraftingElement<WoodCartPinkItem>()
-                )
-            };
-            this.ExperienceOnCraft = 0.1f;  
-            this.LaborInCalories = CreateLaborInCaloriesValue(250, typeof(BasicEngineeringSkill)); 
-            this.CraftMinutes = CreateCraftTimeValue(typeof(PaintWoodCartPinkRecipe), 5, typeof(BasicEngineeringSkill));    
-
-            this.Initialize(Localizer.DoStr("Paint Wood Cart Pink"), typeof(PaintWoodCartPinkRecipe));
-            CraftingComponent.AddRecipe(typeof(PrimitivePaintingTableObject), this);
+            this.Recipes = EMRecipeResolver.Obj.ResolveRecipe(this);
+            this.LaborInCalories = EMRecipeResolver.Obj.ResolveLabor(this);
+            this.CraftMinutes = EMRecipeResolver.Obj.ResolveCraftMinutes(this);
+            this.ExperienceOnCraft = EMRecipeResolver.Obj.ResolveExperience(this);
+            this.Initialize(Defaults.LocalizableName, GetType());
+            CraftingComponent.AddRecipe(EMRecipeResolver.Obj.ResolveStation(this), this);
         }
     }
 
@@ -56,27 +75,29 @@ namespace Eco.Mods.TechTree
     [RequireComponent(typeof(VehicleComponent))]
     [RequireComponent(typeof(ModularStockpileComponent))]
     [RequireComponent(typeof(TailingsReportComponent))]
-    public partial class WoodCartPinkObject : PhysicsWorldObject, IRepresentsItem
+    public partial class WoodCartPinkObject : PhysicsWorldObject, IRepresentsItem, IStorageSlotObject
     {
+        public override LocString DisplayName => Localizer.DoStr("Wood Cart Pink");
+        public Type RepresentedItemType => typeof(WoodCartPinkItem);
+
+        private static readonly StorageSlotModel SlotDefaults = new(typeof(WoodCartPinkItem)) { StorageSlots = 12, };
+
         static WoodCartPinkObject()
         {
             WorldObject.AddOccupancy<WoodCartPinkObject>(new List<BlockOccupancy>(0));
+            EMStorageSlotResolver.AddDefaults(SlotDefaults);
         }
-
-        public override LocString DisplayName { get { return Localizer.DoStr("Wood Cart Pink"); } }
-        public Type RepresentedItemType { get { return typeof(WoodCartPinkItem); } }
-
 
         private WoodCartPinkObject() { }
 
         protected override void Initialize()
         {
             base.Initialize();
-            
-            this.GetComponent<PublicStorageComponent>().Initialize(12, 2100000);           
+
+            this.GetComponent<PublicStorageComponent>().Initialize(EMStorageSlotResolver.Obj.ResolveSlots(this), 2100000);           
             this.GetComponent<VehicleComponent>().Initialize(12, 1, 1);
             this.GetComponent<VehicleComponent>().HumanPowered(1);           
-            this.GetComponent<StockpileComponent>().Initialize(new Vector3i(2,1,2));  
+            this.GetComponent<StockpileComponent>().Initialize(new Vector3i(2,1,2));        
         }
     }
 }
