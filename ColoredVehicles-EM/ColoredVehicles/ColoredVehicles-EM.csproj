@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ColoredCore\ColoredCore.csproj" />
+    <ProjectReference Include="..\ColoredCore\ColoredCore-EM.csproj" />
   </ItemGroup>
 
   <ItemGroup>

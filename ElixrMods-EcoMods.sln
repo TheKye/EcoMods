@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ColoredVehicles", "ColoredV
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VanillaMods", "VanillaMods", "{71574A85-892E-4129-8736-E650D845789F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColoredCore", "ColoredVehicles-EM\ColoredCore\ColoredCore.csproj", "{134746D7-E04B-4859-9084-9F6AB0DC9CA3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoredCore-EM", "ColoredVehicles-EM\ColoredCore\ColoredCore-EM.csproj", "{134746D7-E04B-4859-9084-9F6AB0DC9CA3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
