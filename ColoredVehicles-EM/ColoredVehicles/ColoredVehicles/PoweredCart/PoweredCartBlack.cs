@@ -79,7 +79,7 @@ namespace Eco.Mods.TechTree
         public override LocString DisplayName => Localizer.DoStr("Powered Cart Black");
         public Type RepresentedItemType => typeof(PoweredCartBlackItem);
 
-        private static readonly StorageSlotModel SlotDefaults = new(typeof(PoweredCartBlackObject)) { StorageSlots = 56, };
+        private static readonly StorageSlotModel SlotDefaults = new(typeof(PoweredCartBlackObject)) { StorageSlots = 18, };
 
         static PoweredCartBlackObject()
         {
