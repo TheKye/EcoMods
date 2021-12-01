@@ -21,6 +21,10 @@ This Mod May or May not be updated in line with the original mod
 It may also take longer to prep an updated version of this mod to the latest version of the original mod
 
 
+# Developers
+
+Interested in tweaking this mod yourself? Check out This [Information](https://github.com/TheKye/EcoMods/blob/main/ColoredVehicles-EM/Information.MD)
+
 # Notes
 
 You may edit this to your hearts content and build your own version, 
