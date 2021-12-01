@@ -38,7 +38,6 @@ namespace Eco.Mods.TechTree
 				new EMIngredient("OrangePaintItem", false, 1, true),
 				new EMIngredient("YellowPaintItem", false, 1, true),
 				new EMIngredient("BlackPaintItem", false, 1, true),
-                new EMIngredient("BlackDyeItem", false, 1, true),
                 new EMIngredient("PaintBrushItem", false, 1, true),
                 new EMIngredient("PaintPaletteItem", false, 1, true),
             },

@@ -36,7 +36,6 @@ namespace Eco.Mods.TechTree
             {
                 new EMIngredient("SmallWoodCartItem", false, 1, true),
 				new EMIngredient("WhitePaintItem", false, 1, true),
-                new EMIngredient("BlackDyeItem", false, 1, true),
                 new EMIngredient("PaintBrushItem", false, 1, true),
                 new EMIngredient("PaintPaletteItem", false, 1, true),
             },
