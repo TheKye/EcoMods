@@ -20,7 +20,7 @@ namespace Eco.Mods.TechTree
     [Tag("ColoredPoweredCart")]
     public partial class PoweredCartBrownItem : WorldObjectItem<PoweredCartBrownObject>
     {
-        public override LocString DisplayDescription { get { return Localizer.DoStr("Large brown cart for hauling sizable loads."); } }
+        public override LocString DisplayDescription => Localizer.DoStr("Large brown cart for hauling sizable loads.");
     }
 
     public class PaintPoweredCartBrownRecipe : RecipeFamily, IConfigurableRecipe
@@ -35,10 +35,14 @@ namespace Eco.Mods.TechTree
             {
                 new EMIngredient("PoweredCartItem", false, 1, true),
                 new EMIngredient("BrownPaintItem", false, 1, true),
+                new EMIngredient("PaintBrushItem", false, 1, true),
+                new EMIngredient("PaintPaletteItem", false, 1, true),
             },
             ProductList = new()
             {
                 new EMCraftable("PoweredCartBrownItem"),
+                new EMCraftable("PaintBrushItem"),
+                new EMCraftable("PaintPaletteItem"),
             },
             BaseExperienceOnCraft = 0.1f,
             BaseLabor = 250,
@@ -86,7 +90,7 @@ namespace Eco.Mods.TechTree
             EMStorageSlotResolver.AddDefaults(SlotDefaults);
         }
 
-        private static string[] fuelTagList = new string[]
+        private static readonly string[] fuelTagList = new string[]
         {
             "Burnable Fuel",
         };

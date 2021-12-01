@@ -11,6 +11,7 @@ namespace Eco.Mods.TechTree
     using Eco.Shared.Localization;
     using Eco.Shared.Serialization;
     using Eco.EM.Artistry;
+    using Eco.EM.Framework.Resolvers;
 
     [Serialized]
     [LocDisplayName("Powered Cart Pride")]
@@ -20,37 +21,55 @@ namespace Eco.Mods.TechTree
     [Tag("ColoredPoweredCart")]
     public partial class PoweredCartPrideItem : WorldObjectItem<PoweredCartPrideObject>
     {
-        public override LocString DisplayDescription { get { return Localizer.DoStr("Large pride cart for hauling sizable loads."); } }
+        public override LocString DisplayDescription => Localizer.DoStr("Large pride cart for hauling sizable loads.");
     }
 
-    public class PaintPoweredCartPrideRecipe : RecipeFamily
+    public class PaintPoweredCartPrideRecipe : RecipeFamily, IConfigurableRecipe
     {
+        static RecipeDefaultModel Defaults => new()
+        {
+            ModelType = typeof(PaintPoweredCartPrideRecipe).Name,
+            Assembly = typeof(PaintPoweredCartPrideRecipe).AssemblyQualifiedName,
+            HiddenName = "Paint Powered Cart Pride",
+            LocalizableName = Localizer.DoStr("Paint Powered Cart Pride"),
+            IngredientList = new()
+            {
+                new EMIngredient("PoweredCartItem", true, 1, true),
+                new EMIngredient("RedPaintItem", true, 1, true),
+                new EMIngredient("OrangePaintItem", true, 1, true),
+                new EMIngredient("BluePaintItem", true, 1, true),
+                new EMIngredient("GreenPaintItem", true, 1, true),
+                new EMIngredient("PurplePaintItem", true, 1, true),
+                new EMIngredient("YellowPaintItem", true, 1, true),
+                new EMIngredient("PaintBrushItem", false, 1, true),
+                new EMIngredient("PaintPaletteItem", false, 1, true),
+            },
+            ProductList = new()
+            {
+                new EMCraftable("PoweredCartPrideItem"),
+                new EMCraftable("PaintBrushItem"),
+                new EMCraftable("PaintPaletteItem"),
+            },
+            BaseExperienceOnCraft = 0.1f,
+            BaseLabor = 250,
+            LaborIsStatic = false,
+            BaseCraftTime = 5,
+            CraftTimeIsStatic = false,
+            CraftingStation = "PrimitivePaintingTableItem",
+            RequiredSkillType = typeof(BasicEngineeringSkill),
+            RequiredSkillLevel = 0,
+        };
+
+        static PaintPoweredCartPrideRecipe() { EMRecipeResolver.AddDefaults(Defaults); }
+
         public PaintPoweredCartPrideRecipe()
         {
-            this.Recipes = new List<Recipe>
-            {
-                new Recipe(
-                    "Paint Powered Cart Pride",
-                    Localizer.DoStr("Paint Powered Cart Pride"),
-                    new IngredientElement[]
-                    {
-                        new IngredientElement(typeof(PoweredCartItem), 1, true), 
-                        new IngredientElement(typeof(RedPaintItem), 4, typeof(BasicEngineeringSkill), typeof(BasicEngineeringLavishResourcesTalent)),
-                        new IngredientElement(typeof(OrangePaintItem), 4, typeof(BasicEngineeringSkill), typeof(BasicEngineeringLavishResourcesTalent)),
-                        new IngredientElement(typeof(YellowPaintItem), 4, typeof(BasicEngineeringSkill), typeof(BasicEngineeringLavishResourcesTalent)),
-                        new IngredientElement(typeof(GreenPaintItem), 4, typeof(BasicEngineeringSkill), typeof(BasicEngineeringLavishResourcesTalent)),
-                        new IngredientElement(typeof(BlueDyeItem), 4, typeof(BasicEngineeringSkill), typeof(BasicEngineeringLavishResourcesTalent)),
-                        new IngredientElement(typeof(PurplePaintItem), 4, typeof(BasicEngineeringSkill), typeof(BasicEngineeringLavishResourcesTalent)),                        
-                    },
-                    new CraftingElement<PoweredCartPrideItem>()
-                )
-            };
-            this.ExperienceOnCraft = 0.1f;  
-            this.LaborInCalories = CreateLaborInCaloriesValue(250, typeof(BasicEngineeringSkill)); 
-            this.CraftMinutes = CreateCraftTimeValue(typeof(PaintPoweredCartPrideRecipe), 5, typeof(BasicEngineeringSkill));    
-
-            this.Initialize(Localizer.DoStr("Paint Powered Cart Pride"), typeof(PaintPoweredCartPrideRecipe));
-            CraftingComponent.AddRecipe(typeof(PrimitivePaintingTableObject), this);
+            this.Recipes = EMRecipeResolver.Obj.ResolveRecipe(this);
+            this.LaborInCalories = EMRecipeResolver.Obj.ResolveLabor(this);
+            this.CraftMinutes = EMRecipeResolver.Obj.ResolveCraftMinutes(this);
+            this.ExperienceOnCraft = EMRecipeResolver.Obj.ResolveExperience(this);
+            this.Initialize(Defaults.LocalizableName, GetType());
+            CraftingComponent.AddRecipe(EMRecipeResolver.Obj.ResolveStation(this), this);
         }
     }
 

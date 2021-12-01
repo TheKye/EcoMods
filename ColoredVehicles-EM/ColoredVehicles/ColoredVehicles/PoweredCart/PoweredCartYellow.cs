@@ -11,6 +11,7 @@ namespace Eco.Mods.TechTree
     using Eco.Shared.Localization;
     using Eco.Shared.Serialization;
     using Eco.EM.Artistry;
+    using Eco.EM.Framework.Resolvers;
 
     [Serialized]
     [LocDisplayName("Powered Cart Yellow")]
@@ -20,32 +21,50 @@ namespace Eco.Mods.TechTree
     [Tag("ColoredPoweredCart")]
     public partial class PoweredCartYellowItem : WorldObjectItem<PoweredCartYellowObject>
     {
-        public override LocString DisplayDescription { get { return Localizer.DoStr("Large yellow cart for hauling sizable loads."); } }
+        public override LocString DisplayDescription => Localizer.DoStr("Large yellow cart for hauling sizable loads.");
     }
 
-    public class PaintPoweredCartYellowRecipe : RecipeFamily
+    public class PaintPoweredCartYellowRecipe : RecipeFamily, IConfigurableRecipe
     {
+        static RecipeDefaultModel Defaults => new()
+        {
+            ModelType = typeof(PaintPoweredCartYellowRecipe).Name,
+            Assembly = typeof(PaintPoweredCartYellowRecipe).AssemblyQualifiedName,
+            HiddenName = "Paint Powered Cart Yellow",
+            LocalizableName = Localizer.DoStr("Paint Powered Cart Yellow"),
+            IngredientList = new()
+            {
+                new EMIngredient("PoweredCartItem", false, 1, true),
+                new EMIngredient("YellowPaintItem", false, 1, true),
+                new EMIngredient("PaintBrushItem", false, 1, true),
+                new EMIngredient("PaintPaletteItem", false, 1, true),
+            },
+            ProductList = new()
+            {
+                new EMCraftable("PoweredCartYellowItem"),
+                new EMCraftable("PaintBrushItem"),
+                new EMCraftable("PaintPaletteItem"),
+            },
+            BaseExperienceOnCraft = 0.1f,
+            BaseLabor = 250,
+            LaborIsStatic = false,
+            BaseCraftTime = 5,
+            CraftTimeIsStatic = false,
+            CraftingStation = "PrimitivePaintingTableItem",
+            RequiredSkillType = typeof(BasicEngineeringSkill),
+            RequiredSkillLevel = 0,
+        };
+
+        static PaintPoweredCartYellowRecipe() { EMRecipeResolver.AddDefaults(Defaults); }
+
         public PaintPoweredCartYellowRecipe()
         {
-            this.Recipes = new List<Recipe>
-            {
-                new Recipe(
-                    "Paint Powered Cart Yellow",
-                    Localizer.DoStr("Paint Powered Cart Yellow"),
-                    new IngredientElement[]
-                    {
-                        new IngredientElement(typeof(PoweredCartItem), 1, true), 
-                        new IngredientElement(typeof(YellowPaintItem), 20, typeof(BasicEngineeringSkill), typeof(BasicEngineeringLavishResourcesTalent)),                        
-                    },
-                    new CraftingElement<PoweredCartYellowItem>()
-                )
-            };
-            this.ExperienceOnCraft = 0.1f;  
-            this.LaborInCalories = CreateLaborInCaloriesValue(250, typeof(BasicEngineeringSkill)); 
-            this.CraftMinutes = CreateCraftTimeValue(typeof(PaintPoweredCartYellowRecipe), 5, typeof(BasicEngineeringSkill));    
-
-            this.Initialize(Localizer.DoStr("Paint Powered Cart Yellow"), typeof(PaintPoweredCartYellowRecipe));
-            CraftingComponent.AddRecipe(typeof(PrimitivePaintingTableObject), this);
+            this.Recipes = EMRecipeResolver.Obj.ResolveRecipe(this);
+            this.LaborInCalories = EMRecipeResolver.Obj.ResolveLabor(this);
+            this.CraftMinutes = EMRecipeResolver.Obj.ResolveCraftMinutes(this);
+            this.ExperienceOnCraft = EMRecipeResolver.Obj.ResolveExperience(this);
+            this.Initialize(Defaults.LocalizableName, GetType());
+            CraftingComponent.AddRecipe(EMRecipeResolver.Obj.ResolveStation(this), this);
         }
     }
 

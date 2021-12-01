@@ -11,6 +11,7 @@ namespace Eco.Mods.TechTree
     using Eco.Shared.Localization;
     using Eco.Shared.Serialization;
     using Eco.EM.Artistry;
+    using Eco.EM.Framework.Resolvers;
 
     [Serialized]
     [LocDisplayName("Powered Cart TechnicalBlue")]
@@ -20,33 +21,51 @@ namespace Eco.Mods.TechTree
     [Tag("ColoredPoweredCart")]
     public partial class PoweredCartTechnicalBlueItem : WorldObjectItem<PoweredCartTechnicalBlueObject>
     {
-        public override LocString DisplayDescription { get { return Localizer.DoStr("Large technical blue cart for hauling sizable loads."); } }
+        public override LocString DisplayDescription => Localizer.DoStr("Large technical blue cart for hauling sizable loads.");
     }
 
-    public class PaintPoweredCartTechnicalBlueRecipe : RecipeFamily
+    public class PaintPoweredCartTechnicalBlueRecipe : RecipeFamily, IConfigurableRecipe
     {
+        static RecipeDefaultModel Defaults => new()
+        {
+            ModelType = typeof(PaintPoweredCartYellowRecipe).Name,
+            Assembly = typeof(PaintPoweredCartYellowRecipe).AssemblyQualifiedName,
+            HiddenName = "Paint Powered Cart Technical Blue",
+            LocalizableName = Localizer.DoStr("Paint Powered Cart Technical Blue"),
+            IngredientList = new()
+            {
+                new EMIngredient("PoweredCartItem", false, 1, true),
+                new EMIngredient("BluePaintItem", false, 2, true),
+                new EMIngredient("WhitePaintItem", false, 1, true),
+                new EMIngredient("PaintBrushItem", false, 1, true),
+                new EMIngredient("PaintPaletteItem", false, 1, true),
+            },
+            ProductList = new()
+            {
+                new EMCraftable("PoweredCartTechnicalBlueItem"),
+                new EMCraftable("PaintBrushItem"),
+                new EMCraftable("PaintPaletteItem"),
+            },
+            BaseExperienceOnCraft = 0.1f,
+            BaseLabor = 250,
+            LaborIsStatic = false,
+            BaseCraftTime = 5,
+            CraftTimeIsStatic = false,
+            CraftingStation = "PrimitivePaintingTableItem",
+            RequiredSkillType = typeof(BasicEngineeringSkill),
+            RequiredSkillLevel = 0,
+        };
+
+        static PaintPoweredCartTechnicalBlueRecipe() { EMRecipeResolver.AddDefaults(Defaults); }
+
         public PaintPoweredCartTechnicalBlueRecipe()
         {
-            this.Recipes = new List<Recipe>
-            {
-                new Recipe(
-                    "Paint Powered Cart TechnicalBlue",
-                    Localizer.DoStr("Paint Powered Cart TechnicalBlue"),
-                    new IngredientElement[]
-                    {
-                        new IngredientElement(typeof(PoweredCartItem), 1, true), 
-                        new IngredientElement(typeof(BlueDyeItem), 12, typeof(BasicEngineeringSkill), typeof(BasicEngineeringLavishResourcesTalent)),
-                        new IngredientElement(typeof(WhitePaintItem), 8, typeof(BasicEngineeringSkill), typeof(BasicEngineeringLavishResourcesTalent)),                        
-                    },
-                    new CraftingElement<PoweredCartTechnicalBlueItem>()
-                )
-            };
-            this.ExperienceOnCraft = 0.1f;  
-            this.LaborInCalories = CreateLaborInCaloriesValue(250, typeof(BasicEngineeringSkill)); 
-            this.CraftMinutes = CreateCraftTimeValue(typeof(PaintPoweredCartTechnicalBlueRecipe), 5, typeof(BasicEngineeringSkill));    
-
-            this.Initialize(Localizer.DoStr("Paint Powered Cart TechnicalBlue"), typeof(PaintPoweredCartTechnicalBlueRecipe));
-            CraftingComponent.AddRecipe(typeof(PrimitivePaintingTableObject), this);
+            this.Recipes = EMRecipeResolver.Obj.ResolveRecipe(this);
+            this.LaborInCalories = EMRecipeResolver.Obj.ResolveLabor(this);
+            this.CraftMinutes = EMRecipeResolver.Obj.ResolveCraftMinutes(this);
+            this.ExperienceOnCraft = EMRecipeResolver.Obj.ResolveExperience(this);
+            this.Initialize(Defaults.LocalizableName, GetType());
+            CraftingComponent.AddRecipe(EMRecipeResolver.Obj.ResolveStation(this), this);
         }
     }
 

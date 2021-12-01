@@ -36,10 +36,14 @@ namespace Eco.Mods.TechTree
             {
                 new EMIngredient("PoweredCartItem", false, 1, true),
                 new EMIngredient("BlackPaintItem", false, 1, true),
+                new EMIngredient("PaintBrushItem", false, 1, true),
+                new EMIngredient("PaintPaletteItem", false, 1, true),
             },
             ProductList = new()
             {
                 new EMCraftable("PoweredCartBlackItem"),
+                new EMCraftable("PaintBrushItem"),
+                new EMCraftable("PaintPaletteItem"),
             },
             BaseExperienceOnCraft = 0.1f,
             BaseLabor = 250,
