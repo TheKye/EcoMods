@@ -33,8 +33,8 @@ namespace Eco.Mods.TechTree
             IngredientList = new()
             {
                 new EMIngredient("SmallWoodCartItem", false, 1, true),
-				new EMIngredient("BluePaintItem", false, 1, true),
-				new EMIngredient("WhitePaintItem", false, 1, true),
+				new EMIngredient("BlueDyeItem", false, 1, true),
+				new EMIngredient("WhiteDyeItem", false, 1, true),
                 new EMIngredient("PaintBrushItem", false, 1, true),
                 new EMIngredient("PaintPaletteItem", false, 1, true),
             },

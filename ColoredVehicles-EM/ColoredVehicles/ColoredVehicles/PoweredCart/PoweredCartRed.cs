@@ -3,6 +3,8 @@ namespace Eco.Mods.TechTree
     using System;
     using System.Collections.Generic;
     using Eco.Core.Items;
+    using Eco.EM.Artistry;
+    using Eco.EM.Framework.Resolvers;
     using Eco.Gameplay.Components;
     using Eco.Gameplay.Components.Auth;
     using Eco.Gameplay.Items;
@@ -19,32 +21,50 @@ namespace Eco.Mods.TechTree
     [Tag("ColoredPoweredCart")]
     public partial class PoweredCartRedItem : WorldObjectItem<PoweredCartRedObject>
     {
-        public override LocString DisplayDescription { get { return Localizer.DoStr("Large red cart for hauling sizable loads."); } }
+        public override LocString DisplayDescription => Localizer.DoStr("Large red cart for hauling sizable loads.");
     }
 
-    public class PaintPoweredCartRedRecipe : RecipeFamily
+    public class PaintPoweredCartRedRecipe : RecipeFamily, IConfigurableRecipe
     {
+        static RecipeDefaultModel Defaults => new()
+        {
+            ModelType = typeof(PaintPoweredCartRedRecipe).Name,
+            Assembly = typeof(PaintPoweredCartRedRecipe).AssemblyQualifiedName,
+            HiddenName = "Paint Powered Cart Red",
+            LocalizableName = Localizer.DoStr("Paint Powered Cart Red"),
+            IngredientList = new()
+            {
+                new EMIngredient("SmallWoodCartItem", false, 1, true),
+				new EMIngredient("RedPaintItem", false, 1, true),
+                new EMIngredient("PaintBrushItem", false, 1, true),
+                new EMIngredient("PaintPaletteItem", false, 1, true),
+            },
+            ProductList = new()
+            {
+                new EMCraftable("PoweredCartRedItem"),
+                new EMCraftable("PaintBrushItem"),
+                new EMCraftable("PaintPaletteItem"),
+            },
+            BaseExperienceOnCraft = 0.1f,
+            BaseLabor = 250,
+            LaborIsStatic = false,
+            BaseCraftTime = 2.5f,
+            CraftTimeIsStatic = false,
+            CraftingStation = "PrimitivePaintingTableItem",
+            RequiredSkillType = typeof(BasicEngineeringSkill),
+            RequiredSkillLevel = 0,
+        };
+        
+        static PaintPoweredCartRedRecipe() { EMRecipeResolver.AddDefaults(Defaults); }
+
         public PaintPoweredCartRedRecipe()
         {
-            this.Recipes = new List<Recipe>
-            {
-                new Recipe(
-                    "Paint Powered Cart Red",
-                    Localizer.DoStr("Paint Powered Cart Red"),
-                    new IngredientElement[]
-                    {
-                        new IngredientElement(typeof(PoweredCartItem), 1, true), 
-                        new IngredientElement(typeof(TomatoItem), 20, typeof(BasicEngineeringSkill), typeof(BasicEngineeringLavishResourcesTalent)),                        
-                    },
-                    new CraftingElement<PoweredCartRedItem>()
-                )
-            };
-            this.ExperienceOnCraft = 0.1f;  
-            this.LaborInCalories = CreateLaborInCaloriesValue(250, typeof(BasicEngineeringSkill)); 
-            this.CraftMinutes = CreateCraftTimeValue(typeof(PaintPoweredCartRedRecipe), 5, typeof(BasicEngineeringSkill));    
-
-            this.Initialize(Localizer.DoStr("Paint Powered Cart Red"), typeof(PaintPoweredCartRedRecipe));
-            CraftingComponent.AddRecipe(typeof(PrimitivePaintingTableObject), this);
+            this.Recipes = EMRecipeResolver.Obj.ResolveRecipe(this);
+            this.LaborInCalories = EMRecipeResolver.Obj.ResolveLabor(this);
+            this.CraftMinutes = EMRecipeResolver.Obj.ResolveCraftMinutes(this);
+            this.ExperienceOnCraft = EMRecipeResolver.Obj.ResolveExperience(this);
+            this.Initialize(Defaults.LocalizableName, GetType());
+            CraftingComponent.AddRecipe(EMRecipeResolver.Obj.ResolveStation(this), this);
         }
     }
 
@@ -57,17 +77,20 @@ namespace Eco.Mods.TechTree
     [RequireComponent(typeof(AirPollutionComponent))]       
     [RequireComponent(typeof(VehicleComponent))]
     [RequireComponent(typeof(TailingsReportComponent))]     
-    public partial class PoweredCartRedObject : PhysicsWorldObject, IRepresentsItem
+    public partial class PoweredCartRedObject : PhysicsWorldObject, IRepresentsItem, IStorageSlotObject
     {
-        static PoweredCartRedObject()
-        {
-            WorldObject.AddOccupancy<PoweredCartRedObject>(new List<BlockOccupancy>(0));
-        }
+        private static readonly StorageSlotModel SlotDefaults = new(typeof(PoweredCartRedObject)) { StorageSlots = 18, };
 
         public override LocString DisplayName { get { return Localizer.DoStr("Powered Cart Red"); } }
         public Type RepresentedItemType { get { return typeof(PoweredCartRedItem); } }
 
-        private static string[] fuelTagList = new string[]
+        static PoweredCartRedObject()
+        {
+            WorldObject.AddOccupancy<PoweredCartRedObject>(new List<BlockOccupancy>(0));
+            EMStorageSlotResolver.AddDefaults(SlotDefaults);
+        }
+
+        private static readonly string[] fuelTagList = new string[]
         {
             "Burnable Fuel",
         };
@@ -78,7 +101,7 @@ namespace Eco.Mods.TechTree
         {
             base.Initialize();
             
-            this.GetComponent<PublicStorageComponent>().Initialize(18, 3500000);           
+            this.GetComponent<PublicStorageComponent>().Initialize(EMStorageSlotResolver.Obj.ResolveSlots(this), 3500000);           
             this.GetComponent<FuelSupplyComponent>().Initialize(2, fuelTagList);           
             this.GetComponent<FuelConsumptionComponent>().Initialize(35);    
             this.GetComponent<AirPollutionComponent>().Initialize(0.1f);            
