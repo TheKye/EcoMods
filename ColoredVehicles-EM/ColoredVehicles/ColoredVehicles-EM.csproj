@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -66,4 +66,8 @@
       <HintPath>..\..\dependencies\NodeGraphControl.dll</HintPath>
     </Reference>
   </ItemGroup>
+    
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="if $(ConfigurationName) == Release (&#xD;&#xA;cd $(SolutionDir)&#xD;&#xA;mkdir Builds\Mods\CavRnMods\ColoredVehicles\Assets&#xD;&#xA;&#xD;&#xA;xcopy /Y &quot;$(TargetDir)\ColoredVehicles-EM.dll&quot; &quot;$(SolutionDir)\Builds\Mods\CavRnMods\ColoredVehicles\&quot;&#xD;&#xA;xcopy /Y &quot;$(SolutionDir)\ColoredVehicles-EM\Unity Files\colored_vehicles_v2.5.1.unity3d&quot; &quot;$(SolutionDir)\Builds\Mods\CavRnMods\ColoredVehicles\Assets\&quot;&#xD;&#xA;)" />
+  </Target>
 </Project>

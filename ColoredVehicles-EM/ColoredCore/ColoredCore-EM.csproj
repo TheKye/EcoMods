@@ -64,4 +64,8 @@
     </Reference>
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="if $(ConfigurationName) == Release (&#xD;&#xA;cd $(SolutionDir)&#xD;&#xA;mkdir Builds\Mods\CavRnMods\ColoredCore\Assets&#xD;&#xA;&#xD;&#xA;xcopy /Y &quot;$(TargetDir)\ColoredCore-EM.dll&quot; &quot;$(SolutionDir)\Builds\Mods\CavRnMods\ColoredCore\&quot;&#xD;&#xA;xcopy /Y &quot;$(SolutionDir)\ColoredVehicles-EM\Unity Files\colored_core_v1.0.1.unity3d&quot; &quot;$(SolutionDir)\Builds\Mods\CavRnMods\ColoredCore\Assets\&quot;&#xD;&#xA;)" />
+  </Target>
+
 </Project>
