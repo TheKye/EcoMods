@@ -1,33 +1,50 @@
 ﻿using System.Collections.Generic;
+using Eco.EM.Framework.Resolvers;
 using Eco.Gameplay.Components;
 using Eco.Gameplay.Items;
 using Eco.Shared.Localization;
 
 namespace Eco.Mods.TechTree
 {
-    public class WashSmallWoodCartRecipe : RecipeFamily
+    public class WashSmallWoodCartRecipe : RecipeFamily, IConfigurableRecipe
     {
+        static RecipeDefaultModel Defaults => new()
+        {
+            ModelType = typeof(WashSmallWoodCartRecipe).Name,
+            Assembly = typeof(WashSmallWoodCartRecipe).AssemblyQualifiedName,
+            HiddenName = "Clean Small Wood Cart",
+            LocalizableName = Localizer.DoStr("Clean Small Wood Cart"),
+            IngredientList = new()
+            {
+                new EMIngredient("ColoredSmallWoodCart", true, 1, true),
+                new EMIngredient("PlantFibersItem", false, 10, true),
+                new EMIngredient("BucketOfWaterItem", false, 1, true),
+            },
+            ProductList = new()
+            {
+                new EMCraftable("SmallWoodCartItem"),
+                new EMCraftable("BucketItem"),
+            },
+            BaseExperienceOnCraft = 0.05f,
+            BaseLabor = 50,
+            LaborIsStatic = false,
+            BaseCraftTime = 2,
+            CraftTimeIsStatic = false,
+            CraftingStation = "PrimitivePaintingTableItem",
+            RequiredSkillType = typeof(BasicEngineeringSkill),
+            RequiredSkillLevel = 0,
+        };
+
+        static WashSmallWoodCartRecipe() { EMRecipeResolver.AddDefaults(Defaults); }
+
         public WashSmallWoodCartRecipe()
         {
-            this.Recipes = new List<Recipe>
-            {
-                new Recipe(
-                    "Wash Small Wood Cart Colored",
-                    Localizer.DoStr("Wash Small Wood Cart Colored"),
-                    new IngredientElement[]
-                    {
-                        new IngredientElement("ColoredSmallWoodCart", 1, true),
-                        new IngredientElement(typeof(PlantFibersItem), 10, typeof(CarpentrySkill), typeof(CarpentryLavishResourcesTalent)),
-                    },
-                    new CraftingElement<SmallWoodCartItem>()
-                )
-            };
-            this.ExperienceOnCraft = 0.05f;
-            this.LaborInCalories = CreateLaborInCaloriesValue(50, typeof(CarpentrySkill)); 
-            this.CraftMinutes = CreateCraftTimeValue(typeof(WashSmallWoodCartRecipe), 1, typeof(CarpentrySkill));    
-
-            this.Initialize(Localizer.DoStr("Wash Small Wood Cart Colored"), typeof(WashSmallWoodCartRecipe));
-            CraftingComponent.AddRecipe(typeof(PrimitivePaintingTableObject), this);
+            this.Recipes = EMRecipeResolver.Obj.ResolveRecipe(this);
+            this.LaborInCalories = EMRecipeResolver.Obj.ResolveLabor(this);
+            this.CraftMinutes = EMRecipeResolver.Obj.ResolveCraftMinutes(this);
+            this.ExperienceOnCraft = EMRecipeResolver.Obj.ResolveExperience(this);
+            this.Initialize(Defaults.LocalizableName, GetType());
+            CraftingComponent.AddRecipe(EMRecipeResolver.Obj.ResolveStation(this), this);
         }
     }
 }

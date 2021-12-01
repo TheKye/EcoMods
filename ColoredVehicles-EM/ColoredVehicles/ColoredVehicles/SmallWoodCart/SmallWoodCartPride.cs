@@ -10,6 +10,7 @@ namespace Eco.Mods.TechTree
     using Eco.Shared.Localization;
     using Eco.Shared.Serialization;
     using Eco.EM.Artistry;
+    using Eco.EM.Framework.Resolvers;
 
     [Serialized]
     [LocDisplayName("Small Wood Cart Pride")]
@@ -18,37 +19,55 @@ namespace Eco.Mods.TechTree
     [Tag("ColoredSmallWoodCart")]
     public partial class SmallWoodCartPrideItem : WorldObjectItem<SmallWoodCartPrideObject>
     {
-        public override LocString DisplayDescription { get { return Localizer.DoStr("Small pride cart for hauling small loads."); } }
+        public override LocString DisplayDescription => Localizer.DoStr("Small pride cart for hauling small loads.");
     }
 
-    public class PaintSmallWoodCartPrideRecipe : RecipeFamily
+    public class PaintSmallWoodCartPrideRecipe : RecipeFamily, IConfigurableRecipe
     {
+        static RecipeDefaultModel Defaults => new()
+        {
+            ModelType = typeof(PaintSmallWoodCartPrideRecipe).Name,
+            Assembly = typeof(PaintSmallWoodCartPrideRecipe).AssemblyQualifiedName,
+            HiddenName = "Paint Small Wood Cart Pride",
+            LocalizableName = Localizer.DoStr("Paint Small Wood Cart Pride"),
+            IngredientList = new()
+            {
+                new EMIngredient("SmallWoodCartItem", false, 1, true),
+                new EMIngredient("RedDyeItem", true, 1, true),
+                new EMIngredient("OrangeDyeItem", true, 1, true),
+                new EMIngredient("BlueDyeItem", true, 1, true),
+                new EMIngredient("GreenDyeItem", true, 1, true),
+                new EMIngredient("PurpleDyeItem", true, 1, true),
+                new EMIngredient("YellowDyeItem", true, 1, true),
+                new EMIngredient("PaintBrushItem", false, 1, true),
+                new EMIngredient("PaintPaletteItem", false, 1, true),
+            },
+            ProductList = new()
+            {
+                new EMCraftable("SmallWoodCartPrideItem"),
+                new EMCraftable("PaintBrushItem"),
+                new EMCraftable("PaintPaletteItem"),
+            },
+            BaseExperienceOnCraft = 0.05f,
+            BaseLabor = 125,
+            LaborIsStatic = false,
+            BaseCraftTime = 2.5f,
+            CraftTimeIsStatic = false,
+            CraftingStation = "PrimitivePaintingTableItem",
+            RequiredSkillType = typeof(BasicEngineeringSkill),
+            RequiredSkillLevel = 0,
+        };
+
+        static PaintSmallWoodCartPrideRecipe() { EMRecipeResolver.AddDefaults(Defaults); }
+
         public PaintSmallWoodCartPrideRecipe()
         {
-            this.Recipes = new List<Recipe>
-            {
-                new Recipe(
-                    "Paint Small Wood Cart Pride",
-                    Localizer.DoStr("Paint Small  Cart Pride"),
-                    new IngredientElement[]
-                    {
-                        new IngredientElement(typeof(SmallWoodCartItem), 1, true),
-                        new IngredientElement(typeof(RedPaintItem), 2, typeof(CarpentrySkill), typeof(CarpentryLavishResourcesTalent)),
-                        new IngredientElement(typeof(OrangePaintItem), 2, typeof(CarpentrySkill), typeof(CarpentryLavishResourcesTalent)),
-                        new IngredientElement(typeof(YellowPaintItem), 2, typeof(CarpentrySkill), typeof(CarpentryLavishResourcesTalent)),
-                        new IngredientElement(typeof(GreenPaintItem), 2, typeof(CarpentrySkill), typeof(CarpentryLavishResourcesTalent)),
-                        new IngredientElement(typeof(BlueDyeItem), 2, typeof(CarpentrySkill), typeof(CarpentryLavishResourcesTalent)),
-                        new IngredientElement(typeof(PurplePaintItem), 2, typeof(CarpentrySkill), typeof(CarpentryLavishResourcesTalent)),
-                    },
-                    new CraftingElement<SmallWoodCartPrideItem>()
-                )
-            };
-            this.ExperienceOnCraft = 0.05f;
-            this.LaborInCalories = CreateLaborInCaloriesValue(125, typeof(BasicEngineeringSkill));
-            this.CraftMinutes = CreateCraftTimeValue(typeof(PaintSmallWoodCartPrideRecipe), 2.5f, typeof(BasicEngineeringSkill));
-
-            this.Initialize(Localizer.DoStr("Paint Small Wood Cart Pride"), typeof(PaintSmallWoodCartPrideRecipe));
-            CraftingComponent.AddRecipe(typeof(PrimitivePaintingTableObject), this);
+            this.Recipes = EMRecipeResolver.Obj.ResolveRecipe(this);
+            this.LaborInCalories = EMRecipeResolver.Obj.ResolveLabor(this);
+            this.CraftMinutes = EMRecipeResolver.Obj.ResolveCraftMinutes(this);
+            this.ExperienceOnCraft = EMRecipeResolver.Obj.ResolveExperience(this);
+            this.Initialize(Defaults.LocalizableName, GetType());
+            CraftingComponent.AddRecipe(EMRecipeResolver.Obj.ResolveStation(this), this);
         }
     }
 
@@ -58,16 +77,18 @@ namespace Eco.Mods.TechTree
     [RequireComponent(typeof(MovableLinkComponent))]
     [RequireComponent(typeof(VehicleComponent))]
     [RequireComponent(typeof(TailingsReportComponent))]
-    public partial class SmallWoodCartPrideObject : PhysicsWorldObject, IRepresentsItem
+    public partial class SmallWoodCartPrideObject : PhysicsWorldObject, IRepresentsItem, IStorageSlotObject
     {
+        public override LocString DisplayName => Localizer.DoStr("Small Wood Cart Pride");
+        public Type RepresentedItemType => typeof(SmallWoodCartPrideItem);
+
+        private static readonly StorageSlotModel SlotDefaults = new(typeof(PoweredCartPrideObject)) { StorageSlots = 8, };
+
         static SmallWoodCartPrideObject()
         {
             WorldObject.AddOccupancy<SmallWoodCartPrideObject>(new List<BlockOccupancy>(0));
+            EMStorageSlotResolver.AddDefaults(SlotDefaults);
         }
-
-        public override LocString DisplayName { get { return Localizer.DoStr("Small Wood Cart Pride"); } }
-        public Type RepresentedItemType { get { return typeof(SmallWoodCartPrideItem); } }
-
 
         private SmallWoodCartPrideObject() { }
 
@@ -75,9 +96,9 @@ namespace Eco.Mods.TechTree
         {
             base.Initialize();
 
-            this.GetComponent<PublicStorageComponent>().Initialize(8, 1400000);           
+            this.GetComponent<PublicStorageComponent>().Initialize(EMStorageSlotResolver.Obj.ResolveSlots(this), 1400000);
             this.GetComponent<VehicleComponent>().Initialize(10, 1, 1);
-            this.GetComponent<VehicleComponent>().HumanPowered(0.5f);           
+            this.GetComponent<VehicleComponent>().HumanPowered(0.5f);
         }
     }
 }

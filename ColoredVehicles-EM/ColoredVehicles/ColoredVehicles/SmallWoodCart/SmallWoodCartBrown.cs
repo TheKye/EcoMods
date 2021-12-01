@@ -3,6 +3,7 @@ namespace Eco.Mods.TechTree
     using System;
     using System.Collections.Generic;
     using Eco.Core.Items;
+    using Eco.EM.Framework.Resolvers;
     using Eco.Gameplay.Components;
     using Eco.Gameplay.Components.Auth;
     using Eco.Gameplay.Items;
@@ -17,32 +18,50 @@ namespace Eco.Mods.TechTree
     [Tag("ColoredSmallWoodCart")]
     public partial class SmallWoodCartBrownItem : WorldObjectItem<SmallWoodCartBrownObject>
     {
-        public override LocString DisplayDescription { get { return Localizer.DoStr("Small brown cart for hauling small loads."); } }
+        public override LocString DisplayDescription => Localizer.DoStr("Small brown cart for hauling small loads.");
     }
 
-    public class PaintSmallWoodCartBrownRecipe : RecipeFamily
+    public class PaintSmallWoodCartBrownRecipe : RecipeFamily, IConfigurableRecipe
     {
+        static RecipeDefaultModel Defaults => new()
+        {
+            ModelType = typeof(PaintSmallWoodCartBrownRecipe).Name,
+            Assembly = typeof(PaintSmallWoodCartBrownRecipe).AssemblyQualifiedName,
+            HiddenName = "Paint Small Wood Cart Brown",
+            LocalizableName = Localizer.DoStr("Paint Small Wood Cart Brown"),
+            IngredientList = new()
+            {
+                new EMIngredient("SmallWoodCartItem", false, 1, true),
+                new EMIngredient("BrownDyeItem", false, 1, true),
+                new EMIngredient("PaintBrushItem", false, 1, true),
+                new EMIngredient("PaintPaletteItem", false, 1, true),
+            },
+            ProductList = new()
+            {
+                new EMCraftable("SmallWoodCartBrownItem"),
+                new EMCraftable("PaintBrushItem"),
+                new EMCraftable("PaintPaletteItem"),
+            },
+            BaseExperienceOnCraft = 0.05f,
+            BaseLabor = 125,
+            LaborIsStatic = false,
+            BaseCraftTime = 2.5f,
+            CraftTimeIsStatic = false,
+            CraftingStation = "PrimitivePaintingTableItem",
+            RequiredSkillType = typeof(BasicEngineeringSkill),
+            RequiredSkillLevel = 0,
+        };
+
+        static PaintSmallWoodCartBrownRecipe() { EMRecipeResolver.AddDefaults(Defaults); }
+
         public PaintSmallWoodCartBrownRecipe()
         {
-            this.Recipes = new List<Recipe>
-            {
-                new Recipe(
-                    "Paint Small Wood Cart Brown",
-                    Localizer.DoStr("Paint Small  Cart Brown"),
-                    new IngredientElement[]
-                    {
-                        new IngredientElement(typeof(SmallWoodCartItem), 1, true),
-                        new IngredientElement(typeof(ClayItem), 3, typeof(CarpentrySkill), typeof(CarpentryLavishResourcesTalent)),
-                    },
-                    new CraftingElement<SmallWoodCartBrownItem>()
-                )
-            };
-            this.ExperienceOnCraft = 0.05f;
-            this.LaborInCalories = CreateLaborInCaloriesValue(125, typeof(BasicEngineeringSkill));
-            this.CraftMinutes = CreateCraftTimeValue(typeof(PaintSmallWoodCartBrownRecipe), 2.5f, typeof(BasicEngineeringSkill));
-
-            this.Initialize(Localizer.DoStr("Paint Small Wood Cart Brown"), typeof(PaintSmallWoodCartBrownRecipe));
-            CraftingComponent.AddRecipe(typeof(PrimitivePaintingTableObject), this);
+            this.Recipes = EMRecipeResolver.Obj.ResolveRecipe(this);
+            this.LaborInCalories = EMRecipeResolver.Obj.ResolveLabor(this);
+            this.CraftMinutes = EMRecipeResolver.Obj.ResolveCraftMinutes(this);
+            this.ExperienceOnCraft = EMRecipeResolver.Obj.ResolveExperience(this);
+            this.Initialize(Defaults.LocalizableName, GetType());
+            CraftingComponent.AddRecipe(EMRecipeResolver.Obj.ResolveStation(this), this);
         }
     }
 
@@ -52,16 +71,18 @@ namespace Eco.Mods.TechTree
     [RequireComponent(typeof(MovableLinkComponent))]
     [RequireComponent(typeof(VehicleComponent))]
     [RequireComponent(typeof(TailingsReportComponent))]
-    public partial class SmallWoodCartBrownObject : PhysicsWorldObject, IRepresentsItem
+    public partial class SmallWoodCartBrownObject : PhysicsWorldObject, IRepresentsItem, IStorageSlotObject
     {
+        public override LocString DisplayName => Localizer.DoStr("Small Wood Cart Brown");
+        public Type RepresentedItemType => typeof(SmallWoodCartBrownItem);
+
+        private static readonly StorageSlotModel SlotDefaults = new(typeof(PoweredCartBrownObject)) { StorageSlots = 8, };
+
         static SmallWoodCartBrownObject()
         {
             WorldObject.AddOccupancy<SmallWoodCartBrownObject>(new List<BlockOccupancy>(0));
+            EMStorageSlotResolver.AddDefaults(SlotDefaults);
         }
-
-        public override LocString DisplayName { get { return Localizer.DoStr("Small Wood Cart Brown"); } }
-        public Type RepresentedItemType { get { return typeof(SmallWoodCartBrownItem); } }
-
 
         private SmallWoodCartBrownObject() { }
 
@@ -69,9 +90,9 @@ namespace Eco.Mods.TechTree
         {
             base.Initialize();
 
-            this.GetComponent<PublicStorageComponent>().Initialize(8, 1400000);           
+            this.GetComponent<PublicStorageComponent>().Initialize(EMStorageSlotResolver.Obj.ResolveSlots(this), 1400000);
             this.GetComponent<VehicleComponent>().Initialize(10, 1, 1);
-            this.GetComponent<VehicleComponent>().HumanPowered(0.5f);           
+            this.GetComponent<VehicleComponent>().HumanPowered(0.5f);
         }
     }
 }
