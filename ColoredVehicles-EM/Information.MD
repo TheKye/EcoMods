@@ -4,6 +4,8 @@ If you clone this git in the Projects they all have their own special Build sett
 
 They will output to a folder Called "Builds" in a ready to use Folder Format:
 
+The Builds Folder is in the Solution Directory Incase you need to find it
+
 IE: 
 
 `Builds/Mods/CavRnMods/ColoredCore/ColoredCore-EM.dll`
