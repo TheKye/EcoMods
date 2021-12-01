@@ -11,6 +11,7 @@ namespace Eco.Mods.TechTree
     using Eco.Shared.Localization;
     using Eco.Shared.Serialization;
     using Eco.EM.Artistry;
+    using Eco.EM.Framework.Resolvers;
 
     [Serialized]
     [LocDisplayName("Truck DarkBlue")]
@@ -20,34 +21,52 @@ namespace Eco.Mods.TechTree
     [Tag("ColoredTruck")]
     public partial class TruckDarkBlueItem : WorldObjectItem<TruckDarkBlueObject>
     {
-        public override LocString DisplayDescription { get { return Localizer.DoStr("Modern dark blue truck for hauling sizable loads."); } }
+        public override LocString DisplayDescription => Localizer.DoStr("Modern dark blue truck for hauling sizable loads.");
     }
     
       
-    public class PaintTruckDarkBlueRecipe : RecipeFamily
+    public class PaintTruckDarkBlueRecipe : RecipeFamily, IConfigurableRecipe
     {
+        static RecipeDefaultModel Defaults => new()
+        {
+            ModelType = typeof(PaintTruckDarkBlueRecipe).Name,
+            Assembly = typeof(PaintTruckDarkBlueRecipe).AssemblyQualifiedName,
+            HiddenName = "Paint Truck DarkBlue",
+            LocalizableName = Localizer.DoStr("Paint Truck DarkBlue"),
+            IngredientList = new()
+            {
+                new EMIngredient("TruckItem", false, 1, true),
+                new EMIngredient("BlackPaintItem", false, 1, true),
+                new EMIngredient("BluePaintItem", false, 1, true),
+                new EMIngredient("PaintBrushItem", false, 1, true),
+                new EMIngredient("PaintPaletteItem", false, 1, true),
+            },
+            ProductList = new()
+            {
+                new EMCraftable("TruckDarkBlueItem"),
+                new EMCraftable("PaintBrushItem"),
+                new EMCraftable("PaintPaletteItem"),
+            },
+            BaseExperienceOnCraft = 0.1f,
+            BaseLabor = 750,
+            LaborIsStatic = false,
+            BaseCraftTime = 15,
+            CraftTimeIsStatic = false,
+            CraftingStation = "AdvancedPaintingTableItem",
+            RequiredSkillType = typeof(IndustrySkill),
+            RequiredSkillLevel = 0,
+        };
+
+        static PaintTruckDarkBlueRecipe() { EMRecipeResolver.AddDefaults(Defaults); }
+
         public PaintTruckDarkBlueRecipe()
         {
-            this.Recipes = new List<Recipe>
-            {
-                new Recipe(
-                    "Paint Truck DarkBlue",
-                    Localizer.DoStr("Paint Truck DarkBlue"),
-                    new IngredientElement[]
-                    {
-                        new IngredientElement(typeof(TruckItem), 1, true), 
-                        new IngredientElement(typeof(BlueDyeItem), 36, typeof(IndustrySkill), typeof(IndustryLavishResourcesTalent)),
-                        new IngredientElement(typeof(BlackDyeItem), 24, typeof(IndustrySkill), typeof(IndustryLavishResourcesTalent)),
-                    },
-                    new CraftingElement<TruckDarkBlueItem>()
-                )
-            };
-            this.ExperienceOnCraft = 0.1f;  
-            this.LaborInCalories = CreateLaborInCaloriesValue(750, typeof(IndustrySkill)); 
-            this.CraftMinutes = CreateCraftTimeValue(typeof(PaintTruckDarkBlueRecipe), 15, typeof(IndustrySkill));    
-
-            this.Initialize(Localizer.DoStr("Paint Truck DarkBlue"), typeof(PaintTruckDarkBlueRecipe));
-            CraftingComponent.AddRecipe(typeof(AdvancedPaintingTableObject), this);
+            this.Recipes = EMRecipeResolver.Obj.ResolveRecipe(this);
+            this.LaborInCalories = EMRecipeResolver.Obj.ResolveLabor(this);
+            this.CraftMinutes = EMRecipeResolver.Obj.ResolveCraftMinutes(this);
+            this.ExperienceOnCraft = EMRecipeResolver.Obj.ResolveExperience(this);
+            this.Initialize(Defaults.LocalizableName, GetType());
+            CraftingComponent.AddRecipe(EMRecipeResolver.Obj.ResolveStation(this), this);
         }
     }
 
