@@ -3,6 +3,8 @@ namespace Eco.Mods.TechTree
     using System;
     using System.Collections.Generic;
     using Eco.Core.Items;
+    using Eco.EM.Artistry;
+    using Eco.EM.Framework.Resolvers;
     using Eco.Gameplay.Components;
     using Eco.Gameplay.Components.Auth;
     using Eco.Gameplay.Items;
@@ -10,8 +12,6 @@ namespace Eco.Mods.TechTree
     using Eco.Gameplay.Systems.TextLinks;
     using Eco.Shared.Localization;
     using Eco.Shared.Serialization;
-    using Eco.EM.Artistry;
-    using Eco.EM.Framework.Resolvers;
 
     [Serialized]
     [LocDisplayName("Powered Cart Yellow")]
@@ -77,17 +77,20 @@ namespace Eco.Mods.TechTree
     [RequireComponent(typeof(AirPollutionComponent))]       
     [RequireComponent(typeof(VehicleComponent))]
     [RequireComponent(typeof(TailingsReportComponent))]     
-    public partial class PoweredCartYellowObject : PhysicsWorldObject, IRepresentsItem
+    public partial class PoweredCartYellowObject : PhysicsWorldObject, IRepresentsItem, IStorageSlotObject
     {
+        public override LocString DisplayName => Localizer.DoStr("Powered Cart Yellow");
+        public Type RepresentedItemType => typeof(PoweredCartYellowItem);
+
+        private static readonly StorageSlotModel SlotDefaults = new(typeof(PoweredCartYellowObject)) { StorageSlots = 18, };
+
         static PoweredCartYellowObject()
         {
             WorldObject.AddOccupancy<PoweredCartYellowObject>(new List<BlockOccupancy>(0));
+            EMStorageSlotResolver.AddDefaults(SlotDefaults);
         }
 
-        public override LocString DisplayName { get { return Localizer.DoStr("Powered Cart Yellow"); } }
-        public Type RepresentedItemType { get { return typeof(PoweredCartYellowItem); } }
-
-        private static string[] fuelTagList = new string[]
+        private static readonly string[] fuelTagList = new string[]
         {
             "Burnable Fuel",
         };
@@ -97,11 +100,11 @@ namespace Eco.Mods.TechTree
         protected override void Initialize()
         {
             base.Initialize();
-            
-            this.GetComponent<PublicStorageComponent>().Initialize(18, 3500000);           
-            this.GetComponent<FuelSupplyComponent>().Initialize(2, fuelTagList);           
-            this.GetComponent<FuelConsumptionComponent>().Initialize(35);    
-            this.GetComponent<AirPollutionComponent>().Initialize(0.1f);            
+
+            this.GetComponent<PublicStorageComponent>().Initialize(EMStorageSlotResolver.Obj.ResolveSlots(this), 3500000);
+            this.GetComponent<FuelSupplyComponent>().Initialize(2, fuelTagList);
+            this.GetComponent<FuelConsumptionComponent>().Initialize(35);
+            this.GetComponent<AirPollutionComponent>().Initialize(0.1f);
             this.GetComponent<VehicleComponent>().Initialize(12, 1.5f, 1);
         }
     }

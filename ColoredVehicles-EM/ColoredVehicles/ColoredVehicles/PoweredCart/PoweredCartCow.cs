@@ -78,15 +78,18 @@ namespace Eco.Mods.TechTree
     [RequireComponent(typeof(AirPollutionComponent))]       
     [RequireComponent(typeof(VehicleComponent))]
     [RequireComponent(typeof(TailingsReportComponent))]     
-    public partial class PoweredCartCowObject : PhysicsWorldObject, IRepresentsItem
+    public partial class PoweredCartCowObject : PhysicsWorldObject, IRepresentsItem, IStorageSlotObject
     {
+        public override LocString DisplayName => Localizer.DoStr("Powered Cart Cow");
+        public Type RepresentedItemType => typeof(PoweredCartCowItem);
+
+        private static readonly StorageSlotModel SlotDefaults = new(typeof(PoweredCartCowObject)) { StorageSlots = 18, };
+
         static PoweredCartCowObject()
         {
             WorldObject.AddOccupancy<PoweredCartCowObject>(new List<BlockOccupancy>(0));
+            EMStorageSlotResolver.AddDefaults(SlotDefaults);
         }
-
-        public override LocString DisplayName => Localizer.DoStr("Powered Cart Cow");
-        public Type RepresentedItemType => typeof(PoweredCartCowItem);
 
         private static readonly string[] fuelTagList = new string[]
         {
@@ -98,11 +101,11 @@ namespace Eco.Mods.TechTree
         protected override void Initialize()
         {
             base.Initialize();
-            
-            this.GetComponent<PublicStorageComponent>().Initialize(18, 3500000);           
-            this.GetComponent<FuelSupplyComponent>().Initialize(2, fuelTagList);           
-            this.GetComponent<FuelConsumptionComponent>().Initialize(35);    
-            this.GetComponent<AirPollutionComponent>().Initialize(0.1f);            
+
+            this.GetComponent<PublicStorageComponent>().Initialize(EMStorageSlotResolver.Obj.ResolveSlots(this), 3500000);
+            this.GetComponent<FuelSupplyComponent>().Initialize(2, fuelTagList);
+            this.GetComponent<FuelConsumptionComponent>().Initialize(35);
+            this.GetComponent<AirPollutionComponent>().Initialize(0.1f);
             this.GetComponent<VehicleComponent>().Initialize(12, 1.5f, 1);
         }
     }

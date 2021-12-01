@@ -78,7 +78,6 @@ namespace Eco.Mods.TechTree
     [RequireComponent(typeof(TailingsReportComponent))]     
     public partial class PoweredCartBrownObject : PhysicsWorldObject, IRepresentsItem, IStorageSlotObject
     {
-
         public override LocString DisplayName => Localizer.DoStr("Powered Cart Brown");
         public Type RepresentedItemType => typeof(PoweredCartBrownItem);
 
