@@ -78,17 +78,20 @@ namespace Eco.Mods.TechTree
     [RequireComponent(typeof(VehicleComponent))]
     [RequireComponent(typeof(ModularStockpileComponent))]   
     [RequireComponent(typeof(TailingsReportComponent))]     
-    public partial class TruckGreenObject : PhysicsWorldObject, IRepresentsItem
+    public partial class TruckGreenObject : PhysicsWorldObject, IRepresentsItem, IStorageSlotObject
     {
+        public override LocString DisplayName => Localizer.DoStr("Truck Green");
+        public Type RepresentedItemType => typeof(TruckGreenItem);
+
+        private static readonly StorageSlotModel SlotDefaults = new(typeof(TruckGreenObject)) { StorageSlots = 36, };
+
         static TruckGreenObject()
         {
             WorldObject.AddOccupancy<TruckGreenObject>(new List<BlockOccupancy>(0));
+            EMStorageSlotResolver.AddDefaults(SlotDefaults);
         }
 
-        public override LocString DisplayName { get { return Localizer.DoStr("Truck Green"); } }
-        public Type RepresentedItemType { get { return typeof(TruckGreenItem); } }
-
-        private static string[] fuelTagList = new string[]
+        private static readonly string[] fuelTagList = new string[]
         {
             "Liquid Fuel"
         };
@@ -98,13 +101,13 @@ namespace Eco.Mods.TechTree
         protected override void Initialize()
         {
             base.Initialize();
-            
-            this.GetComponent<PublicStorageComponent>().Initialize(36, 8000000);           
-            this.GetComponent<FuelSupplyComponent>().Initialize(2, fuelTagList);           
-            this.GetComponent<FuelConsumptionComponent>().Initialize(25);    
-            this.GetComponent<AirPollutionComponent>().Initialize(0.5f);            
+
+            this.GetComponent<PublicStorageComponent>().Initialize(EMStorageSlotResolver.Obj.ResolveSlots(this), 8000000);
+            this.GetComponent<FuelSupplyComponent>().Initialize(2, fuelTagList);
+            this.GetComponent<FuelConsumptionComponent>().Initialize(25);
+            this.GetComponent<AirPollutionComponent>().Initialize(0.5f);
             this.GetComponent<VehicleComponent>().Initialize(20, 2, 2);
-            this.GetComponent<StockpileComponent>().Initialize(new Vector3i(2,2,3));  
+            this.GetComponent<StockpileComponent>().Initialize(new Vector3i(2, 2, 3));
         }
     }
 }
