@@ -7,6 +7,7 @@ using Eco.Shared.Math;
 namespace Eco.Mods.TechTree
 {
     using System;
+    using Eco.EM.Framework.Resolvers;
     using Gameplay.Components;
     using Gameplay.Components.Auth;
     using Gameplay.Items;
@@ -59,26 +60,44 @@ namespace Eco.Mods.TechTree
     }
 
     [RequiresSkill(typeof(LoggingSkill), 3)]
-    public class PrimitivePaintingTableRecipe : RecipeFamily
+    public class PrimitivePaintingTableRecipe : RecipeFamily, IConfigurableRecipe
     {
+        static RecipeDefaultModel Defaults => new()
+        {
+            ModelType = typeof(PrimitivePaintingTableRecipe).Name,
+            Assembly = typeof(PrimitivePaintingTableRecipe).AssemblyQualifiedName,
+            HiddenName = "PrimitivePaintingTable",
+            LocalizableName = Localizer.DoStr("Primitive Painting Table"),
+            IngredientList = new()
+            {
+                new EMIngredient("Wood", true, 20),
+                new EMIngredient("WoodBoard", true, 10),
+                new EMIngredient("PlantFibersItem", false, 40),
+            },
+            ProductList = new()
+            {
+                new EMCraftable("PrimitivePaintingTableItem"),
+            },
+            BaseExperienceOnCraft = 1,
+            BaseLabor = 150,
+            LaborIsStatic = false,
+            BaseCraftTime = 5,
+            CraftTimeIsStatic = false,
+            CraftingStation = "REPLACEME",
+            RequiredSkillType = typeof(LoggingSkill),
+            RequiredSkillLevel = 3,
+        };
+
+        static PrimitivePaintingTableRecipe() { EMRecipeResolver.AddDefaults(Defaults); }
+
         public PrimitivePaintingTableRecipe()
         {
-            var product = new Recipe(
-                "PrimitivePaintingTable",
-                Localizer.DoStr("Primitive Painting Table"),
-                new IngredientElement[]
-                {
-                    new IngredientElement("Wood", 20, typeof(LoggingSkill)),
-                    new IngredientElement("WoodBoard", 10, typeof(LoggingSkill)),
-                    new IngredientElement(typeof(PlantFibersItem), 40, typeof(LoggingSkill)),
-                },
-                new CraftingElement<PrimitivePaintingTableItem>()
-            );
-            this.Recipes = new List<Recipe> { product };
-            this.LaborInCalories = CreateLaborInCaloriesValue(150); 
-            this.CraftMinutes = CreateCraftTimeValue(5);
-            this.Initialize(Localizer.DoStr("Primitive Painting Table"), typeof(PrimitivePaintingTableRecipe));
-            CraftingComponent.AddRecipe(typeof(CarpentryTableObject), this);
+            this.Recipes = EMRecipeResolver.Obj.ResolveRecipe(this);
+            this.LaborInCalories = EMRecipeResolver.Obj.ResolveLabor(this);
+            this.CraftMinutes = EMRecipeResolver.Obj.ResolveCraftMinutes(this);
+            this.ExperienceOnCraft = EMRecipeResolver.Obj.ResolveExperience(this);
+            this.Initialize(Defaults.LocalizableName, GetType());
+            CraftingComponent.AddRecipe(EMRecipeResolver.Obj.ResolveStation(this), this);
         }
     }
 }

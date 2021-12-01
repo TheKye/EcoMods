@@ -7,6 +7,7 @@ using Eco.Shared.Math;
 namespace Eco.Mods.TechTree
 {
     using System;
+    using Eco.EM.Framework.Resolvers;
     using Gameplay.Components;
     using Gameplay.Components.Auth;
     using Gameplay.Items;
@@ -57,31 +58,48 @@ namespace Eco.Mods.TechTree
     {
         public override LocString DisplayDescription => Localizer.DoStr("A table used to paint steam trucks and trucks");
 
-        static AdvancedPaintingTableItem()
-        {
-        }
+        static AdvancedPaintingTableItem() { }
     }
 
     [RequiresSkill(typeof(SmeltingSkill), 3)]
-    public class AdvancedPaintingTableRecipe : RecipeFamily
+    public class AdvancedPaintingTableRecipe : RecipeFamily, IConfigurableRecipe
     {
+        static RecipeDefaultModel Defaults => new()
+        {
+            ModelType = typeof(AdvancedPaintingTableRecipe).Name,
+            Assembly = typeof(AdvancedPaintingTableRecipe).AssemblyQualifiedName,
+            HiddenName = "AdvancedPaintingTable",
+            LocalizableName = Localizer.DoStr("Advanced Painting Table"),
+            IngredientList = new()
+            {
+                new EMIngredient("IronBarItem", false, 30),
+                new EMIngredient("Lumber", true, 10),
+            },
+            ProductList = new()
+            {
+                new EMCraftable("AdvancedPaintingTableItem"),
+            },
+            BaseExperienceOnCraft = 1,
+            BaseLabor = 300,
+            LaborIsStatic = false,
+            BaseCraftTime = 15,
+            CraftTimeIsStatic = false,
+            CraftingStation = "AnvilItem",
+            RequiredSkillType = typeof(SmeltingSkill),
+            RequiredSkillLevel = 3,
+            IngredientImprovementTalents = typeof(SmeltingLavishResourcesTalent),
+        };
+
+        static AdvancedPaintingTableRecipe() { EMRecipeResolver.AddDefaults(Defaults); }
+
         public AdvancedPaintingTableRecipe()
         {
-            var product = new Recipe(
-                "AdvancedPaintingTable",
-                Localizer.DoStr("Advanced Painting Table"),
-                new IngredientElement[]
-                {
-                    new IngredientElement(typeof(IronBarItem), 30, typeof(SmeltingSkill), typeof(SmeltingLavishResourcesTalent)),
-                    new IngredientElement("Lumber", 10, typeof(SmeltingSkill), typeof(SmeltingLavishResourcesTalent)),
-                },
-                new CraftingElement<AdvancedPaintingTableItem>()
-            );
-            this.Recipes = new List<Recipe> {product};
-            this.LaborInCalories = CreateLaborInCaloriesValue(300);
-            this.CraftMinutes = CreateCraftTimeValue(15);
-            this.Initialize(Localizer.DoStr("Advanced Painting Table"), typeof(AdvancedPaintingTableRecipe));
-            CraftingComponent.AddRecipe(typeof(AnvilObject), this);
+            this.Recipes = EMRecipeResolver.Obj.ResolveRecipe(this);
+            this.LaborInCalories = EMRecipeResolver.Obj.ResolveLabor(this);
+            this.CraftMinutes = EMRecipeResolver.Obj.ResolveCraftMinutes(this);
+            this.ExperienceOnCraft = EMRecipeResolver.Obj.ResolveExperience(this);
+            this.Initialize(Defaults.LocalizableName, GetType());
+            CraftingComponent.AddRecipe(EMRecipeResolver.Obj.ResolveStation(this), this);
         }
     }
 }

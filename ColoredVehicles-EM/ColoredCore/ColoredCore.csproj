@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ElixrMods.Framework" Version="3.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="Eco.ActorsFramework">
       <HintPath>..\..\dependencies\Eco.ActorsFramework.dll</HintPath>
     </Reference>
