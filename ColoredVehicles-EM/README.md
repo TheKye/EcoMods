@@ -8,7 +8,7 @@ This Requires [EM Artistry](https://eco.mod.io/elixr-mods-artistry) V3.1.0+ and 
 
 Ensure you have EM Framework and EM Artistry installed
 
-Goto [Releases]() And Download the Latest Colored Vehicles Release, (This Includes Colored Core and all Unity Files)
+Goto [Releases](https://github.com/TheKye/EcoMods/releases/tag/ColoredVehicles) And Download the Latest Colored Vehicles Release, (This Includes Colored Core and all Unity Files)
 
 Unzip into your Server Root Folder, 
 
@@ -25,7 +25,7 @@ It may also take longer to prep an updated version of this mod to the latest ver
 
 You may edit this to your hearts content and build your own version, 
 
-This Does NOT Use the EM Resolvers at this time, so to adjust the recipes you will need to do it in this Project and build yourself
+This Does Use the EM Resolvers at this time, so you cand adjust the recipes at will
 
 You can find information on all items In EM Artistry [Here](https://docs.elixrmods.com/Page/2/ElixrModsEMArtistry)
 
