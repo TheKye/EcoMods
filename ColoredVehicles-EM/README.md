@@ -25,7 +25,7 @@ It may also take longer to prep an updated version of this mod to the latest ver
 
 You may edit this to your hearts content and build your own version, 
 
-This Does Use the EM Resolvers at this time, so you cand adjust the recipes at will
+This Does Use the EM Resolvers so you cand adjust the recipes at will
 
 You can find information on all items In EM Artistry [Here](https://docs.elixrmods.com/Page/2/ElixrModsEMArtistry)
 
