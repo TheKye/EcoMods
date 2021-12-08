@@ -34,7 +34,7 @@ namespace Eco.Mods.TechTree
             LocalizableName = Localizer.DoStr("Paint Powered Cart Black"),
             IngredientList = new()
             {
-                new EMIngredient("SmallWoodCartItem", false, 1, true),
+                new EMIngredient("PoweredCartItem", false, 1, true),
 				new EMIngredient("BlackPaintItem", false, 1, true),
                 new EMIngredient("PaintBrushItem", false, 1, true),
                 new EMIngredient("PaintPaletteItem", false, 1, true),
