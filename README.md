@@ -9,7 +9,9 @@ This is a Repo for a whole bunch of EM Tweaked Mods/Open Source Mods
 
 You may edit this to your hearts content and build your own version, 
 
-This Does NOT Use the EM Resolvers at this time, so to adjust the recipes you will need to do it in this Project and build yourself
+Some Of these Mods may make use of the EM Resolvers,
+
+If they don't then you will need to adjust the recipes yourself and build yourself
 
 # Credits
 
