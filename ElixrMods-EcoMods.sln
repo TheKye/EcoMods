@@ -11,6 +11,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VanillaMods", "VanillaMods"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoredCore-EM", "ColoredVehicles-EM\ColoredCore\ColoredCore-EM.csproj", "{134746D7-E04B-4859-9084-9F6AB0DC9CA3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExperienceController", "ExperienceController", "{2A9F30CD-8E63-4153-8ADD-6E315996CBA2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExperienceController", "ExperienceController\ExperienceController.csproj", "{B54DDF4B-3D39-43CB-AE56-E4DAF47848DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +29,10 @@ Global
 		{134746D7-E04B-4859-9084-9F6AB0DC9CA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{134746D7-E04B-4859-9084-9F6AB0DC9CA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{134746D7-E04B-4859-9084-9F6AB0DC9CA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B54DDF4B-3D39-43CB-AE56-E4DAF47848DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B54DDF4B-3D39-43CB-AE56-E4DAF47848DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B54DDF4B-3D39-43CB-AE56-E4DAF47848DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B54DDF4B-3D39-43CB-AE56-E4DAF47848DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +40,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{AA65D85D-DEE8-45DD-8B49-FAA11238F052} = {1CFEDC29-4AD7-4F63-91F4-FF1F1FB42745}
 		{134746D7-E04B-4859-9084-9F6AB0DC9CA3} = {1CFEDC29-4AD7-4F63-91F4-FF1F1FB42745}
+		{B54DDF4B-3D39-43CB-AE56-E4DAF47848DB} = {2A9F30CD-8E63-4153-8ADD-6E315996CBA2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9843A669-BC8C-48CE-A9C5-227DB9F1D3C5}
