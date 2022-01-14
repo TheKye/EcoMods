@@ -34,7 +34,7 @@ namespace Eco.Mods.TechTree
             IngredientList = new()
             {
                 new EMIngredient("WoodCartItem", false, 1, true),
-				new EMIngredient("BrownDyeItem", false, 1, true),
+				new EMIngredient("BrownPaintItem", false, 1, true),
                 new EMIngredient("PaintBrushItem", false, 1, true),
                 new EMIngredient("PaintPaletteItem", false, 1, true),
             },
@@ -81,6 +81,7 @@ namespace Eco.Mods.TechTree
 
         public static VehicleModel defaults = new(
             typeof(WoodCartBrownObject),
+            displayName        : "Wood Cart Brown",
             fuelTagList        : null,
             fuelSlots          : 0,
             fuelConsumption    : 0,

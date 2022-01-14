@@ -81,6 +81,7 @@ namespace Eco.Mods.TechTree
 
         public static VehicleModel defaults = new(
             typeof(WoodCartYellowObject),
+            displayName        : "Wood Cart Yellow",
             fuelTagList        : null,
             fuelSlots          : 0,
             fuelConsumption    : 0,

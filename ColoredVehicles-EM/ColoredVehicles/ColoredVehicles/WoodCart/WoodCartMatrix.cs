@@ -82,6 +82,7 @@ namespace Eco.Mods.TechTree
 
         public static VehicleModel defaults = new(
             typeof(WoodCartMatrixObject),
+            displayName        : "Wood Cart Matrix",
             fuelTagList        : null,
             fuelSlots          : 0,
             fuelConsumption    : 0,

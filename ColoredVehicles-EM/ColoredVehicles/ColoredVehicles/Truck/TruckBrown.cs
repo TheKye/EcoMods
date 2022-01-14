@@ -86,14 +86,15 @@ namespace Eco.Mods.TechTree
 
         public static VehicleModel defaults = new(
             typeof(TruckBrownObject),
-            fuelTagList        :fuelTagList,
-            fuelSlots          :2,
-            fuelConsumption    :25,
-            airPollution       :0.5f,
-            maxSpeed           :20,
-            efficencyMultiplier:2,
-            storageSlots       :36,
-            maxWeight          :8000000,
+            displayName        : "Truck Brown",
+            fuelTagList        : fuelTagList,
+            fuelSlots          : 2,
+            fuelConsumption    : 25,
+            airPollution       : 0.5f,
+            maxSpeed           : 20,
+            efficencyMultiplier: 2,
+            storageSlots       : 36,
+            maxWeight          : 8000000,
             seats              : 2
         );
 
@@ -115,7 +116,7 @@ namespace Eco.Mods.TechTree
             base.Initialize();
             
             this.GetComponent<PublicStorageComponent>().Initialize(EMVehicleResolver.Obj.ResolveStorageSlots(this), EMVehicleResolver.Obj.ResolveMaxWeight(this));           
-            this.GetComponent<FuelSupplyComponent>().Initialize(EMVehicleResolver.Obj.ResolveFuelSlots(this), EMVehicleResolver.Obj.ResolveFuelTagList(this));           
+            this.GetComponent<FuelSupplyComponent>().Initialize(EMVehicleResolver.Obj.ResolveFuelSlots(this), fuelTagList);           
             this.GetComponent<FuelConsumptionComponent>().Initialize(EMVehicleResolver.Obj.ResolveFuelConsumption(this));    
             this.GetComponent<AirPollutionComponent>().Initialize(EMVehicleResolver.Obj.ResolveAirPollution(this));            
             this.GetComponent<VehicleComponent>().Initialize(EMVehicleResolver.Obj.ResolveMaxSpeed(this), EMVehicleResolver.Obj.ResolveEfficiencyMultiplier(this), EMVehicleResolver.Obj.ResolveSeats(this));
