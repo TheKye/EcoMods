@@ -77,17 +77,28 @@ namespace Eco.Mods.TechTree
     [RequireComponent(typeof(AirPollutionComponent))]       
     [RequireComponent(typeof(VehicleComponent))]
     [RequireComponent(typeof(TailingsReportComponent))]     
-    public partial class PoweredCartOrangeObject : PhysicsWorldObject, IRepresentsItem, IStorageSlotObject
+    public partial class PoweredCartOrangeObject : PhysicsWorldObject, IRepresentsItem, IConfigurableVehicle
     {
-        private static readonly StorageSlotModel SlotDefaults = new(typeof(PoweredCartOrangeObject)) { StorageSlots = 18, };
+        public override LocString DisplayName => Localizer.DoStr("Powered Cart Orange");
+        public Type RepresentedItemType => typeof(PoweredCartOrangeItem);
 
-        public override LocString DisplayName { get { return Localizer.DoStr("Powered Cart Orange"); } }
-        public Type RepresentedItemType { get { return typeof(PoweredCartOrangeItem); } }
+        public static VehicleModel defaults = new(
+            typeof(PoweredCartOrangeObject),
+            fuelTagList: fuelTagList,
+            fuelSlots          : 2,
+            fuelConsumption    : 35,
+            airPollution       : 0.1f,
+            maxSpeed           : 12,
+            efficencyMultiplier: 1.5f,
+            storageSlots       : 18,
+            maxWeight          : 3500000,
+            seats              : 1
+        );
 
         static PoweredCartOrangeObject()
         {
             WorldObject.AddOccupancy<PoweredCartOrangeObject>(new List<BlockOccupancy>(0));
-            EMStorageSlotResolver.AddDefaults(SlotDefaults);
+            EMVehicleResolver.AddDefaults(defaults);
         }
 
         private static readonly string[] fuelTagList = new string[]
@@ -101,11 +112,11 @@ namespace Eco.Mods.TechTree
         {
             base.Initialize();
             
-            this.GetComponent<PublicStorageComponent>().Initialize(EMStorageSlotResolver.Obj.ResolveSlots(this), 3500000);           
-            this.GetComponent<FuelSupplyComponent>().Initialize(2, fuelTagList);           
-            this.GetComponent<FuelConsumptionComponent>().Initialize(35);    
-            this.GetComponent<AirPollutionComponent>().Initialize(0.1f);            
-            this.GetComponent<VehicleComponent>().Initialize(12, 1.5f, 1);
+            this.GetComponent<PublicStorageComponent>().Initialize(EMVehicleResolver.Obj.ResolveStorageSlots(this), EMVehicleResolver.Obj.ResolveMaxWeight(this));           
+            this.GetComponent<FuelSupplyComponent>().Initialize(EMVehicleResolver.Obj.ResolveFuelSlots(this), EMVehicleResolver.Obj.ResolveFuelTagList(this));           
+            this.GetComponent<FuelConsumptionComponent>().Initialize(EMVehicleResolver.Obj.ResolveFuelConsumption(this));    
+            this.GetComponent<AirPollutionComponent>().Initialize(EMVehicleResolver.Obj.ResolveAirPollution(this));            
+            this.GetComponent<VehicleComponent>().Initialize(EMVehicleResolver.Obj.ResolveMaxSpeed(this), EMVehicleResolver.Obj.ResolveEfficiencyMultiplier(this), EMVehicleResolver.Obj.ResolveSeats(this));
         }
     }
 }

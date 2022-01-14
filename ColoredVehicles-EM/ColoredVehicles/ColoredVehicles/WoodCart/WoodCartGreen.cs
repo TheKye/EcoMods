@@ -74,17 +74,27 @@ namespace Eco.Mods.TechTree
     [RequireComponent(typeof(VehicleComponent))]
     [RequireComponent(typeof(ModularStockpileComponent))]
     [RequireComponent(typeof(TailingsReportComponent))]
-    public partial class WoodCartGreenObject : PhysicsWorldObject, IRepresentsItem, IStorageSlotObject
+    public partial class WoodCartGreenObject : PhysicsWorldObject, IRepresentsItem, IConfigurableVehicle
     {
         public override LocString DisplayName => Localizer.DoStr("Wood Cart Green");
         public Type RepresentedItemType => typeof(WoodCartGreenItem);
 
-        private static readonly StorageSlotModel SlotDefaults = new(typeof(WoodCartGreenItem)) { StorageSlots = 12, };
+        public static VehicleModel defaults = new(
+            typeof(WoodCartGreenObject),
+            fuelTagList        : null,
+            fuelSlots          : 0,
+            fuelConsumption    : 0,
+            airPollution       : 0,
+            maxSpeed           : 12,
+            efficencyMultiplier: 1,
+            storageSlots       : 12,
+            maxWeight          : 2100000
+        );
 
         static WoodCartGreenObject()
         {
             WorldObject.AddOccupancy<WoodCartGreenObject>(new List<BlockOccupancy>(0));
-            EMStorageSlotResolver.AddDefaults(SlotDefaults);
+            EMVehicleResolver.AddDefaults(defaults);
         }
 
         private WoodCartGreenObject() { }
@@ -93,8 +103,8 @@ namespace Eco.Mods.TechTree
         {
             base.Initialize();
 
-            this.GetComponent<PublicStorageComponent>().Initialize(EMStorageSlotResolver.Obj.ResolveSlots(this), 2100000);           
-            this.GetComponent<VehicleComponent>().Initialize(12, 1, 1);
+            this.GetComponent<PublicStorageComponent>().Initialize(EMVehicleResolver.Obj.ResolveStorageSlots(this), EMVehicleResolver.Obj.ResolveMaxWeight(this));    
+            this.GetComponent<VehicleComponent>().Initialize(EMVehicleResolver.Obj.ResolveMaxSpeed(this), EMVehicleResolver.Obj.ResolveEfficiencyMultiplier(this), EMVehicleResolver.Obj.ResolveSeats(this));
             this.GetComponent<VehicleComponent>().HumanPowered(1);           
             this.GetComponent<StockpileComponent>().Initialize(new Vector3i(2,1,2));        
         }

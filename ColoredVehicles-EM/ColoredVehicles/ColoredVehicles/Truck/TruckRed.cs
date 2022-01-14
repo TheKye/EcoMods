@@ -9,56 +9,56 @@ namespace Eco.Mods.TechTree
     using Eco.Gameplay.Components.Auth;
     using Eco.Gameplay.Items;
     using Eco.Gameplay.Objects;
-    using Eco.Gameplay.Systems.TextLinks;
+    using Eco.Shared.Math;
     using Eco.Shared.Localization;
     using Eco.Shared.Serialization;
     
     [Serialized]
-    [LocDisplayName("Powered Cart TechnicalRed")]
-    [Weight(15000)]  
-    [AirPollution(0.1f)] 
-    [Ecopedia("CavRnMods", "Colored Vehicles", true, InPageTooltip.DynamicTooltip)]  
-    [Tag("ColoredPoweredCart")]
-    public partial class PoweredCartTechnicalRedItem : WorldObjectItem<PoweredCartTechnicalRedObject>
+    [LocDisplayName("Truck Red")]
+    [Weight(25000)]  
+    [AirPollution(0.5f)] 
+    [Ecopedia("CavRnMods", "Colored Vehicles", true, InPageTooltip.DynamicTooltip)]                  
+    [Tag("ColoredTruck")]
+    public partial class TruckRedItem : WorldObjectItem<TruckRedObject>
     {
-        public override LocString DisplayDescription => Localizer.DoStr("Large technical red cart for hauling sizable loads.");
+        public override LocString DisplayDescription => Localizer.DoStr("Modern red truck for hauling sizable loads.");
     }
-
-    public class PaintPoweredCartTechnicalRedRecipe : RecipeFamily, IConfigurableRecipe
+    
+      
+    public class PaintTruckRedRecipe : RecipeFamily, IConfigurableRecipe
     {
         static RecipeDefaultModel Defaults => new()
         {
-            ModelType = typeof(PaintPoweredCartTechnicalRedRecipe).Name,
-            Assembly = typeof(PaintPoweredCartTechnicalRedRecipe).AssemblyQualifiedName,
-            HiddenName = "Paint Powered Cart TechnicalRed",
-            LocalizableName = Localizer.DoStr("Paint Powered Cart TechnicalRed"),
+            ModelType = typeof(PaintTruckRedRecipe).Name,
+            Assembly = typeof(PaintTruckRedRecipe).AssemblyQualifiedName,
+            HiddenName = "Paint Truck Red",
+            LocalizableName = Localizer.DoStr("Paint Truck Red"),
             IngredientList = new()
             {
-                new EMIngredient("PoweredCartItem", false, 1, true),
+                new EMIngredient("TruckItem", false, 1, true),
 				new EMIngredient("RedPaintItem", false, 1, true),
-				new EMIngredient("OrangePaintItem", false, 1, true),
                 new EMIngredient("PaintBrushItem", false, 1, true),
                 new EMIngredient("PaintPaletteItem", false, 1, true),
             },
             ProductList = new()
             {
-                new EMCraftable("PoweredCartTechnicalRedItem"),
+                new EMCraftable("TruckRedItem"),
                 new EMCraftable("PaintBrushItem"),
                 new EMCraftable("PaintPaletteItem"),
             },
             BaseExperienceOnCraft = 0.1f,
-            BaseLabor = 250,
+            BaseLabor = 750,
             LaborIsStatic = false,
-            BaseCraftTime = 2.5f,
+            BaseCraftTime = 15,
             CraftTimeIsStatic = false,
-            CraftingStation = "PrimitivePaintingTableItem",
-            RequiredSkillType = typeof(BasicEngineeringSkill),
+            CraftingStation = "AdvancedPaintingTableItem",
+            RequiredSkillType = typeof(IndustrySkill),
             RequiredSkillLevel = 0,
         };
-        
-        static PaintPoweredCartTechnicalRedRecipe() { EMRecipeResolver.AddDefaults(Defaults); }
 
-        public PaintPoweredCartTechnicalRedRecipe()
+        static PaintTruckRedRecipe() { EMRecipeResolver.AddDefaults(Defaults); }
+
+        public PaintTruckRedRecipe()
         {
             this.Recipes = EMRecipeResolver.Obj.ResolveRecipe(this);
             this.LaborInCalories = EMRecipeResolver.Obj.ResolveLabor(this);
@@ -77,37 +77,38 @@ namespace Eco.Mods.TechTree
     [RequireComponent(typeof(MovableLinkComponent))]        
     [RequireComponent(typeof(AirPollutionComponent))]       
     [RequireComponent(typeof(VehicleComponent))]
+    [RequireComponent(typeof(ModularStockpileComponent))]   
     [RequireComponent(typeof(TailingsReportComponent))]     
-    public partial class PoweredCartTechnicalRedObject : PhysicsWorldObject, IRepresentsItem, IConfigurableVehicle
+    public partial class TruckRedObject : PhysicsWorldObject, IRepresentsItem, IConfigurableVehicle
     {
-        public override LocString DisplayName => Localizer.DoStr("Powered Cart TechnicalRed");
-        public Type RepresentedItemType => typeof(PoweredCartTechnicalRedItem);
+        public override LocString DisplayName => Localizer.DoStr("Truck Red");
+        public Type RepresentedItemType => typeof(TruckRedItem);
 
         public static VehicleModel defaults = new(
-            typeof(PoweredCartTechnicalRedObject),
-            fuelTagList: fuelTagList,
-            fuelSlots          : 2,
-            fuelConsumption    : 35,
-            airPollution       : 0.1f,
-            maxSpeed           : 12,
-            efficencyMultiplier: 1.5f,
-            storageSlots       : 18,
-            maxWeight          : 3500000,
-            seats              : 1
+            typeof(TruckRedObject),
+            fuelTagList        :fuelTagList,
+            fuelSlots          :2,
+            fuelConsumption    :25,
+            airPollution       :0.5f,
+            maxSpeed           :20,
+            efficencyMultiplier:2,
+            storageSlots       :36,
+            maxWeight          :8000000,
+            seats              : 2
         );
 
-        static PoweredCartTechnicalRedObject()
+        static TruckRedObject()
         {
-            WorldObject.AddOccupancy<PoweredCartTechnicalRedObject>(new List<BlockOccupancy>(0));
+            WorldObject.AddOccupancy<TruckRedObject>(new List<BlockOccupancy>(0));
             EMVehicleResolver.AddDefaults(defaults);
         }
 
         private static readonly string[] fuelTagList = new string[]
         {
-            "Burnable Fuel",
+            "Liquid Fuel"
         };
 
-        private PoweredCartTechnicalRedObject() { }
+        private TruckRedObject() { }
 
         protected override void Initialize()
         {
@@ -118,6 +119,7 @@ namespace Eco.Mods.TechTree
             this.GetComponent<FuelConsumptionComponent>().Initialize(EMVehicleResolver.Obj.ResolveFuelConsumption(this));    
             this.GetComponent<AirPollutionComponent>().Initialize(EMVehicleResolver.Obj.ResolveAirPollution(this));            
             this.GetComponent<VehicleComponent>().Initialize(EMVehicleResolver.Obj.ResolveMaxSpeed(this), EMVehicleResolver.Obj.ResolveEfficiencyMultiplier(this), EMVehicleResolver.Obj.ResolveSeats(this));
+            this.GetComponent<StockpileComponent>().Initialize(new Vector3i(2,2,3));  
         }
     }
 }

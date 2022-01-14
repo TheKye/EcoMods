@@ -80,17 +80,28 @@
     [RequireComponent(typeof(VehicleComponent))]
     [RequireComponent(typeof(ModularStockpileComponent))]   
     [RequireComponent(typeof(TailingsReportComponent))]     
-    public partial class SteamTruckSteampunkObject : PhysicsWorldObject, IRepresentsItem, IStorageSlotObject
+    public partial class SteamTruckSteampunkObject : PhysicsWorldObject, IRepresentsItem, IConfigurableVehicle
     {
         public override LocString DisplayName => Localizer.DoStr("Steam Truck Steampunk");
         public Type RepresentedItemType => typeof(SteamTruckSteampunkItem);
 
-        private static readonly StorageSlotModel SlotDefaults = new(typeof(SteamTruckSteampunkObject)) { StorageSlots = 24, };
+        public static VehicleModel defaults = new(
+            typeof(SteamTruckSteampunkObject),
+            fuelTagList: fuelTagList,
+            fuelSlots          :2,
+            fuelConsumption    :25,
+            airPollution       :0.5f,
+            maxSpeed           :30,
+            efficencyMultiplier:2,
+            storageSlots       :24,
+            maxWeight          :5000000,
+            seats              : 2
+        );
 
         static SteamTruckSteampunkObject()
         {
             WorldObject.AddOccupancy<SteamTruckSteampunkObject>(new List<BlockOccupancy>(0));
-            EMStorageSlotResolver.AddDefaults(SlotDefaults);
+            EMVehicleResolver.AddDefaults(defaults);
         }
 
         private static readonly string[] fuelTagList = new string[]
@@ -104,11 +115,11 @@
         {
             base.Initialize();
             
-            this.GetComponent<PublicStorageComponent>().Initialize(EMStorageSlotResolver.Obj.ResolveSlots(this), 5000000);           
-            this.GetComponent<FuelSupplyComponent>().Initialize(2, fuelTagList);           
-            this.GetComponent<FuelConsumptionComponent>().Initialize(25);    
-            this.GetComponent<AirPollutionComponent>().Initialize(0.5f);            
-            this.GetComponent<VehicleComponent>().Initialize(20, 2, 2);
+            this.GetComponent<PublicStorageComponent>().Initialize(EMVehicleResolver.Obj.ResolveStorageSlots(this), EMVehicleResolver.Obj.ResolveMaxWeight(this));           
+            this.GetComponent<FuelSupplyComponent>().Initialize(EMVehicleResolver.Obj.ResolveFuelSlots(this), EMVehicleResolver.Obj.ResolveFuelTagList(this));           
+            this.GetComponent<FuelConsumptionComponent>().Initialize(EMVehicleResolver.Obj.ResolveFuelConsumption(this));    
+            this.GetComponent<AirPollutionComponent>().Initialize(EMVehicleResolver.Obj.ResolveAirPollution(this));            
+            this.GetComponent<VehicleComponent>().Initialize(EMVehicleResolver.Obj.ResolveMaxSpeed(this), EMVehicleResolver.Obj.ResolveEfficiencyMultiplier(this), EMVehicleResolver.Obj.ResolveSeats(this));
             this.GetComponent<StockpileComponent>().Initialize(new Vector3i(2,2,3));  
         }
     }

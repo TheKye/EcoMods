@@ -73,17 +73,27 @@ namespace Eco.Mods.TechTree
     [RequireComponent(typeof(MovableLinkComponent))]
     [RequireComponent(typeof(VehicleComponent))]
     [RequireComponent(typeof(TailingsReportComponent))]
-    public partial class SmallWoodCartLightBlueObject : PhysicsWorldObject, IRepresentsItem, IStorageSlotObject
+    public partial class SmallWoodCartLightBlueObject : PhysicsWorldObject, IRepresentsItem, IConfigurableVehicle
     {
         public override LocString DisplayName => Localizer.DoStr("Small Wood Cart LightBlue");
         public Type RepresentedItemType => typeof(SmallWoodCartLightBlueItem);
 
-        private static readonly StorageSlotModel SlotDefaults = new(typeof(SmallWoodCartLightBlueObject)) { StorageSlots = 8, };
+        public static VehicleModel defaults = new(
+            typeof(SmallWoodCartLightBlueObject),
+            fuelTagList        : null,
+            fuelSlots          : 0,
+            fuelConsumption    : 0,
+            airPollution       : 0,
+            maxSpeed           : 10,
+            efficencyMultiplier: 1,
+            storageSlots       : 8,
+            maxWeight          : 1400000
+        ); 
 
         static SmallWoodCartLightBlueObject()
         {
             WorldObject.AddOccupancy<SmallWoodCartLightBlueObject>(new List<BlockOccupancy>(0));
-            EMStorageSlotResolver.AddDefaults(SlotDefaults);
+            EMVehicleResolver.AddDefaults(defaults);
         }
 
         private SmallWoodCartLightBlueObject() { }
@@ -92,8 +102,8 @@ namespace Eco.Mods.TechTree
         {
             base.Initialize();
 
-            this.GetComponent<PublicStorageComponent>().Initialize(EMStorageSlotResolver.Obj.ResolveSlots(this), 1400000);           
-            this.GetComponent<VehicleComponent>().Initialize(10, 1, 1);
+            this.GetComponent<PublicStorageComponent>().Initialize(EMVehicleResolver.Obj.ResolveStorageSlots(this), EMVehicleResolver.Obj.ResolveMaxWeight(this));    
+            this.GetComponent<VehicleComponent>().Initialize(EMVehicleResolver.Obj.ResolveMaxSpeed(this), EMVehicleResolver.Obj.ResolveEfficiencyMultiplier(this), EMVehicleResolver.Obj.ResolveSeats(this));
             this.GetComponent<VehicleComponent>().HumanPowered(0.5f);           
         }
     }
