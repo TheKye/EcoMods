@@ -3,7 +3,7 @@ This is a Repo for a whole bunch of EM Tweaked Mods/Open Source Mods
 
 # Mods Available:
 
-- [Zangdars Colored Vehicles Mod](https://github.com/TheKye/EcoMods/tree/main/ColoredVehicles-EM) EM Version
+- [Zangdars Colored Vehicles And HotWheels Mod](https://github.com/TheKye/EcoMods/tree/main/ColoredVehicles-EM) EM Version
 
 # Notes
 
