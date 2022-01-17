@@ -2,13 +2,15 @@
 
 Colored Vehicles Mod By Zangdar, This has been Adjusted to use EM Artistry items to paint the vehicles
 
-This Requires [EM Artistry](https://eco.mod.io/elixr-mods-artistry) V3.1.0+ and [EM Framework](https://eco.mod.io/elixr-mods-em-framework) V3.1.4+ To use this version
+HotWheels Mod By Zangdar, This has been Adjusted to use EM Artistry to paint the Bikes and Scooters
+
+This Requires [EM Artistry](https://eco.mod.io/elixr-mods-artistry) V3.1.0+ and [EM Framework](https://eco.mod.io/elixr-mods-em-framework) V3.1.6+ To use this version
 
 # Installation
 
 Ensure you have EM Framework and EM Artistry installed
 
-Goto [Releases](https://github.com/TheKye/EcoMods/releases/tag/ColoredVehicles) And Download the Latest Colored Vehicles Release, (This Includes Colored Core and all Unity Files)
+Goto [Releases](https://github.com/TheKye/EcoMods/releases/) And Download the Latest Colored Releases, (This Includes Colored Core and all Unity Files)
 
 Unzip into your Server Root Folder, 
 
@@ -35,7 +37,7 @@ You can find information on all items In EM Artistry [Here](https://docs.elixrmo
 
 # Credits
 
-Original Credits goto Zangdar for the Creation of the Original Mod [Colored Vehicles](https://eco.mod.io/colored-vehicles) and a thank you for allowing me to make this modified version
+Original Credits goto Zangdar for the Creation of the Original Mod [Colored Vehicles](https://eco.mod.io/colored-vehicles) and [Hotwheels Mod](https://eco.mod.io/hot-wheels) a thank you for allowing me to make this modified version
 
 
 # License
