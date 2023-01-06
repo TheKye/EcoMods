@@ -2,7 +2,7 @@
 using Eco.Core.Utils;
 using Eco.Gameplay.Players;
 using Eco.Gameplay.Skills;
-using Eco.Gameplay.Systems.Chat;
+using Eco.Gameplay.Systems.Messaging.Chat.Commands;
 using Eco.Shared.Utils;
 using Eco.Simulation;
 using Eco.Simulation.Time;
@@ -16,7 +16,8 @@ using System.Text;
 
 namespace Eco.EM.Admin
 {
-    public class ExperienceController : IModKitPlugin, IInitializablePlugin, IChatCommandHandler
+    [ChatCommandHandler]
+    public class ExperienceController : IModKitPlugin, IInitializablePlugin
     {
         // CHANGE THIS IF REQUIRED :: The stars you want new players to start with
         public int startingStars = 1;
@@ -68,7 +69,7 @@ namespace Eco.EM.Admin
             SkillManager.Obj.Settings.LevelUps = newSpecialtyCosts;
 
             // Checks for first Login by User and does stuff.
-            UserManager.OnNewUserJoined.Add(u =>
+            UserManager.NewUserJoinedEvent.Add(u =>
             {
                 if (u.SlgId != "DiscordLinkSlg")
                 {
@@ -85,5 +86,6 @@ namespace Eco.EM.Admin
         }
 
         public string GetStatus() => String.Empty;
+        public string GetCategory() => "ElixrMods";
     }
 }
